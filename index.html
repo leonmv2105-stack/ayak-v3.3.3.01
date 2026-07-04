@@ -10,6 +10,7 @@
             --accent-color: #ff6584;
             --cat-color: #f9a826;
             --hacker-green: #00ff66;
+            --error-red: #ff3333;
         }
 
         * {
@@ -176,16 +177,17 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 30px 20px;
+            padding: 30px 15px;
             border-radius: 30px;
             text-align: center;
             box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 40px rgba(255, 101, 132, 0.05);
             transform-style: preserve-3d;
             transition: transform 0.2s ease-out;
-            max-width: 450px;
-            width: 92%;
+            max-width: 460px;
+            width: 95%;
             z-index: 10;
             margin: auto;
+            position: relative;
         }
 
         /* --- SISTEM MENU TAB --- */
@@ -194,14 +196,16 @@
             justify-content: space-around;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 15px;
-            padding: 6px;
+            padding: 4px;
             margin-bottom: 25px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
         .menu-tab {
-            padding: 10px 5px;
-            font-size: 0.85rem;
+            padding: 8px 4px;
+            font-size: 0.8rem;
             font-weight: bold;
             color: rgba(255, 255, 255, 0.6);
             background: transparent;
@@ -210,6 +214,7 @@
             cursor: pointer;
             transition: all 0.3s;
             flex: 1;
+            min-width: 75px;
         }
 
         .menu-tab.active {
@@ -233,7 +238,7 @@
         }
 
         h1, h2 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             background: linear-gradient(45deg, #ff6584, #ffac67);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -352,7 +357,57 @@
             transition: opacity 0.5s ease;
         }
 
-        /* Menu 4: Kejutan */
+        /* Menu Jebakan Cinta & Kado */
+        .jebakan-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            min-height: 220px;
+            position: relative;
+        }
+
+        .btn-jebakan {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            width: 85%;
+            max-width: 300px;
+        }
+        .btn-jebakan:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Efek Tombol Lari */
+        #btn-lari {
+            position: absolute;
+            transition: all 0.15s ease-out;
+            z-index: 99;
+        }
+
+        /* Fake Blue Screen / Crash Overlay */
+        #fake-error-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0000aa;
+            color: white;
+            z-index: 10000;
+            font-family: monospace;
+            padding: 40px 20px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
         .gift-box-final {
             display: inline-block;
             margin: 15px auto;
@@ -437,6 +492,11 @@
 </head>
 <body>
 
+    <!-- FAKE ERROR OVERLAY (BLUE SCREEN OF DEATH) -->
+    <div id="fake-error-overlay">
+        <!-- Teks default ini akan di-overwrite otomatis lewat javascript saat tombol diklik -->
+    </div>
+
     <!-- SCREEN LOADING ALA HACKER -->
     <div id="loading-screen">
         <canvas id="matrix-canvas"></canvas>
@@ -446,7 +506,6 @@
                 <div class="progress-bar" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
             </div>
-            <!-- Tombol interaksi pemicu otentikasi audio agar terhindar dari blokir browser -->
             <button class="btn-start-system" id="startBtn" onclick="enterMainSystem()">BYPASS & ENTER SYSTEM</button>
         </div>
     </div>
@@ -466,7 +525,8 @@
                 <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
                 <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
                 <button class="menu-tab" onclick="switchMenu('menu-letter', this)">✉️ Surat</button>
-                <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Surprise</button>
+                <button class="menu-tab" onclick="switchMenu('menu-trap', this)">🔒 Rahasia</button>
+                <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Kado</button>
             </div>
 
             <!-- MENU 1: UTAMA -->
@@ -514,7 +574,27 @@
                 <div class="footer-note" id="letter-signature">— Dari Kakak 🎈</div>
             </div>
 
-            <!-- MENU 4: SURPRISE -->
+            <!-- MENU 4: JEBAKAN CINTA & KESAL -->
+            <div id="menu-trap" class="menu-content">
+                <h2>Pertanyaan Serius 🔒</h2>
+                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab dengan jujur ya, Ayak.</p>
+                
+                <div class="jebakan-box" id="jebakan-container" style="min-height: 220px;">
+                    <!-- Skenario 1: Tombol Nembak Lari -->
+                    <p style="font-weight: bold; color: #ff6584; margin-bottom: 10px;">Kamu mau gak jadi pacar Kakak?</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; width: 100%; position: relative; height: 50px;">
+                        <button class="btn-jebakan" style="width: 100px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
+                        <button class="btn-jebakan" id="btn-lari" style="width: 100px; position: absolute; left: 55%; margin-top: 0;" onmouseover="kaburAja()">Enggak 😜</button>
+                    </div>
+                    
+                    <hr style="width: 100%; border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+
+                    <!-- Skenario 2: Surat Cinta Crash Screen -->
+                    <button class="btn-jebakan" style="width: 85%;" onclick="pemicuFakeCrash()">✉️ Buka Surat Cinta Rahasia</button>
+                </div>
+            </div>
+
+            <!-- MENU 5: SURPRISE KADO -->
             <div id="menu-gift" class="menu-content">
                 <h2>Buka Kado Kamu! 🎁</h2>
                 <p id="gift-instruction" style="color: #eee; font-size: 0.95rem; margin-bottom: 10px;">Ketuk kado misterius di bawah ini untuk mengaktifkan perayaan puncak!</p>
@@ -604,7 +684,6 @@
         }
         updateLoading();
 
-        // Fungsi pemicu masuk ke antarmuka utama
         function enterMainSystem() {
             clearInterval(matrixInterval);
             document.getElementById('loading-screen').style.display = 'none';
@@ -613,7 +692,6 @@
             mainInt.style.display = 'flex';
             setTimeout(() => { mainInt.style.opacity = '1'; }, 50);
             
-            // Putar audio aman dari pemblokiran browser
             toggleMusic();
         }
 
@@ -650,6 +728,74 @@
                 letterTyped = true;
                 typeWriter(suratText, 0);
             }
+            
+            // Reset posisi tombol lari jika user pindah menu lalu kembali lagi
+            if(menuId === 'menu-trap') {
+                const btnLari = document.getElementById('btn-lari');
+                btnLari.style.top = '0px';
+                btnLari.style.left = '55%';
+            }
+        }
+
+        // --- AKSI JEBAKAN CINTA & KESAL ---
+        function kaburAja() {
+            const btnLari = document.getElementById('btn-lari');
+            const container = document.getElementById('jebakan-container');
+            
+            // Cari batas acak di dalam area kontainer menu rahasia
+            const maxW = container.clientWidth - btnLari.clientWidth;
+            const maxH = 60; // Dibatasi biar gak terlalu jauh ke atas/bawah menu lain
+            
+            const acakX = Math.floor(Math.random() * (maxW - 20));
+            const acakH = Math.floor(Math.random() * maxH) - 20; // Variasi naik turun dikit
+            
+            btnLari.style.left = acakX + 'px';
+            btnLari.style.top = acakH + 'px';
+        }
+        
+        // Pemicu touch khusus layar HP biar dia makin kesel gak bisa pencet "Enggak"
+        document.getElementById('btn-lari').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            kaburAja();
+        });
+
+        function terimaCinta() {
+            burstHearts('💖');
+            alert('WKWK diklik MAU juga akhirnya! 😂 Fix ya, keputusan ini sah, mutlak, dan tidak bisa diganggu gugat oleh pihak manapun! Selamat hari jadian! 🤪🥳');
+        }
+
+        function pemicuFakeCrash() {
+            const overlay = document.getElementById('fake-error-overlay');
+            
+            // Kita ubah teks BSOD-nya jadi versi gombalan sebelum ditampilkan
+            overlay.innerHTML = `
+                <p style="font-size: 1.5rem; margin-bottom: 20px;">:( A fatal attraction 0xHEART-BREAK has occurred.</p>
+                <p>Sistem mendeteksi detak jantung berlebih saat menatap mata Ayak.</p>
+                <p>Mengunduh file rasa sayang... [100% COMPLETE]</p>
+                <p>Menghapus status jomblo... [LOADING ERROR - USER TOO CUTE]</p>
+                <br>
+                <p>Sistem mengalami crash karena terlalu banyak memikirkan kamu setiap hari.</p>
+                <br>
+                <p>* Tolong berikan senyuman terbaik kamu untuk memulihkan sistem.</p>
+                <p>* Jangan ditutup, atau Kakak bakal makin kangen.</p>
+                <br><br>
+                <p id="loading-error-text" style="color: #ffaa67; font-weight: bold;">Kembali ke kenyataan dalam 6 detik...</p>
+            `;
+            
+            overlay.style.display = 'block';
+            
+            let sisaWaktu = 6;
+            const countdownEl = document.getElementById('loading-error-text');
+            
+            const timer = setInterval(() => {
+                sisaWaktu--;
+                if(countdownEl) countdownEl.innerText = `Kembali ke kenyataan dalam ${sisaWaktu} detik...`;
+                if(sisaWaktu <= 0) {
+                    clearInterval(timer);
+                    overlay.style.display = 'none';
+                    alert('Hayo... kaget ya dikira eror beneran? 😜 Selamat ulang tahun ya Ayak! Semoga harimu penuh senyum hari ini!');
+                }
+            }, 1000);
         }
 
         function burstHearts(customEmoji) {
@@ -796,9 +942,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
                 return;
             }
 
-            // ISI NOMOR WHATSAPP KAMU DI SINI (Ganti dengan nomor aslimu, diawali 62)
             const myPhoneNumber = "628xxxxxxxxxx"; 
-            
             const fullMessage = `Halo Kak! Ini harapan dan doa aku di hari ulang tahunku:\n\n"${wishText}"`;
             const encodedMessage = encodeURIComponent(fullMessage);
             window.open(`https://api.whatsapp.com/send?phone=${myPhoneNumber}&text=${encodedMessage}`, '_blank');
