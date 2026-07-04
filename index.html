@@ -223,6 +223,12 @@
             box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
         }
 
+        /* Gaya Khusus jika Menu Terkunci / Disabled */
+        .menu-tab.disabled-tab {
+            opacity: 0.3;
+            cursor: not-allowed !important;
+        }
+
         .menu-content {
             display: none;
             animation: tabFadeIn 0.4s ease forwards;
@@ -357,7 +363,7 @@
             transition: opacity 0.5s ease;
         }
 
-        /* Menu Jebakan Cinta & Kado */
+        /* Menu Jebakan Berlapis */
         .jebakan-box {
             display: flex;
             flex-direction: column;
@@ -382,13 +388,6 @@
         }
         .btn-jebakan:hover {
             background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* Efek Tombol Lari */
-        #btn-lari {
-            position: absolute;
-            transition: all 0.15s ease-out;
-            z-index: 99;
         }
 
         /* Fake Blue Screen / Crash Overlay */
@@ -493,9 +492,7 @@
 <body>
 
     <!-- FAKE ERROR OVERLAY (BLUE SCREEN OF DEATH) -->
-    <div id="fake-error-overlay">
-        <!-- Teks default ini akan di-overwrite otomatis lewat javascript saat tombol diklik -->
-    </div>
+    <div id="fake-error-overlay"></div>
 
     <!-- SCREEN LOADING ALA HACKER -->
     <div id="loading-screen">
@@ -521,7 +518,7 @@
         <div class="card-container" id="main-card">
             
             <!-- MENU NAVIGASI -->
-            <div class="menu-navigation">
+            <div class="menu-navigation" id="nav-bar">
                 <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
                 <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
                 <button class="menu-tab" onclick="switchMenu('menu-letter', this)">✉️ Surat</button>
@@ -574,23 +571,21 @@
                 <div class="footer-note" id="letter-signature">— Dari Kakak 🎈</div>
             </div>
 
-            <!-- MENU 4: JEBAKAN CINTA & KESAL -->
+            <!-- MENU 4: JEBAKAN PILIHAN BERLAPIS -->
             <div id="menu-trap" class="menu-content">
                 <h2>Pertanyaan Serius 🔒</h2>
-                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab dengan jujur ya, Ayak.</p>
+                <p id="sub-tanya" style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab dengan jujur ya, Ayak.</p>
                 
-                <div class="jebakan-box" id="jebakan-container" style="min-height: 220px;">
-                    <!-- Skenario 1: Tombol Nembak Lari -->
-                    <p style="font-weight: bold; color: #ff6584; margin-bottom: 10px;">Kamu mau gak jadi pacar Kakak?</p>
-                    <div style="display: flex; gap: 20px; justify-content: center; width: 100%; position: relative; height: 50px;">
-                        <button class="btn-jebakan" style="width: 100px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
-                        <button class="btn-jebakan" id="btn-lari" style="width: 100px; position: absolute; left: 55%; margin-top: 0;" onmouseover="kaburAja()">Enggak 😜</button>
+                <div class="jebakan-box" id="jebakan-container" style="min-height: 220px; justify-content: center;">
+                    <p id="teks-tanya" style="font-weight: bold; color: #ff6584; margin-bottom: 15px; font-size: 1.1rem; padding: 0 10px;">Kamu mau gak jadi pacar Kakak?</p>
+                    
+                    <div id="opsi-container" style="display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;">
+                        <button class="btn-jebakan" style="width: 120px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
+                        <button class="btn-jebakan" id="btn-tolak" style="width: 120px; background: linear-gradient(45deg, #ff3333, #cc0000);" onclick="prosesTolak()">Enggak 😜</button>
                     </div>
                     
-                    <hr style="width: 100%; border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
-
-                    <!-- Skenario 2: Surat Cinta Crash Screen -->
-                    <button class="btn-jebakan" style="width: 85%;" onclick="pemicuFakeCrash()">✉️ Buka Surat Cinta Rahasia</button>
+                    <hr style="width: 100%; border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                    <button class="btn-jebakan" id="btn-fake-crash" style="width: 85%;" onclick="pemicuFakeCrash()">✉️ Buka Surat Cinta Rahasia</button>
                 </div>
             </div>
 
@@ -717,7 +712,15 @@
 
         // --- NAVIGATION TAB HANDLING ---
         let letterTyped = false;
+        let isLockedInTrap = false; // Status apakah menu sedang terkunci
+
         function switchMenu(menuId, tabElement) {
+            // JIKA MENU SEDANG TERKUNCI, cegah perpindahan halaman!
+            if (isLockedInTrap && menuId !== 'menu-trap') {
+                alert("Eits! Nggak bisa kabur ke menu lain! Pertanyaannya harus dijawab dulu ya! 😜🔒");
+                return;
+            }
+
             document.querySelectorAll('.menu-content').forEach(content => content.classList.remove('active'));
             document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
             
@@ -729,45 +732,75 @@
                 typeWriter(suratText, 0);
             }
             
-            // Reset posisi tombol lari jika user pindah menu lalu kembali lagi
-            if(menuId === 'menu-trap') {
-                const btnLari = document.getElementById('btn-lari');
-                btnLari.style.top = '0px';
-                btnLari.style.left = '55%';
+            // JIKA USER MASUK KE MENU RAHASIA, AKTIFKAN LOCK!
+            if (menuId === 'menu-trap') {
+                isLockedInTrap = true;
+                // Tambahkan efek visual redup pada tab navigasi lain agar kelihatan kekunci
+                document.querySelectorAll('.menu-tab').forEach(tab => {
+                    if(tab !== tabElement) tab.classList.add('disabled-tab');
+                });
             }
         }
 
-        // --- AKSI JEBAKAN CINTA & KESAL ---
-        function kaburAja() {
-            const btnLari = document.getElementById('btn-lari');
-            const container = document.getElementById('jebakan-container');
+        // --- AKSI JEBAKAN PILIHAN BERLAPIS & PENGUNCI ---
+        let tahapTolak = 0;
+        const daftarPertanyaan = [
+            "Lho, gak bisa gitu dong. Coba pikir-pikir lagi, beneran gak mau? 🥺",
+            "Masa gak mau sih? Kakak kan baik, rajin menabung, dan seru. Yakin tetep enggak? 🤔",
+            "Gak ada alasan buat nolak! Ini kesempatan langka lho. Masih mau klik enggak? 😤",
+            "Eits... Gak bisa! Pilihan kamu sudah habis! Harus MAU! 😜"
+        ];
+
+        function prosesTolak() {
+            const teksTanya = document.getElementById('teks-tanya');
+            const btnTolak = document.getElementById('btn-tolak');
+
+            if (tahapTolak < 3) {
+                teksTanya.innerText = daftarPertanyaan[tahapTolak];
+                tahapTolak++;
+            } 
             
-            // Cari batas acak di dalam area kontainer menu rahasia
-            const maxW = container.clientWidth - btnLari.clientWidth;
-            const maxH = 60; // Dibatasi biar gak terlalu jauh ke atas/bawah menu lain
-            
-            const acakX = Math.floor(Math.random() * (maxW - 20));
-            const acakH = Math.floor(Math.random() * maxH) - 20; // Variasi naik turun dikit
-            
-            btnLari.style.left = acakX + 'px';
-            btnLari.style.top = acakH + 'px';
+            if (tahapTolak === 3) {
+                teksTanya.innerText = daftarPertanyaan[3];
+                document.getElementById('sub-tanya').innerText = "Sudah dikunci, tidak bisa dilewati! Hahaha 🔒";
+                // Sembunyikan juga tombol fake crash biar dia fokus terpojok
+                document.getElementById('btn-fake-crash').style.display = 'none';
+                
+                btnTolak.innerText = "Harus Mau! 🤪";
+                btnTolak.style.background = "linear-gradient(45deg, #ff6584, #ff4b72)";
+                btnTolak.setAttribute("onclick", "terimaCinta()");
+            }
         }
-        
-        // Pemicu touch khusus layar HP biar dia makin kesel gak bisa pencet "Enggak"
-        document.getElementById('btn-lari').addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            kaburAja();
-        });
 
         function terimaCinta() {
             burstHearts('💖');
-            alert('WKWK diklik MAU juga akhirnya! 😂 Fix ya, keputusan ini sah, mutlak, dan tidak bisa diganggu gugat oleh pihak manapun! Selamat hari jadian! 🤪🥳');
+            
+            // PESAN MANIS & MAAF YANG MEMAKSA KARENA SUSAH DIKEJAR
+            alert("Maaf ya kalau Kakak agak maksa begini... Sumpah, abisnya kamunya itu susah banget dikejar, lari mulu kek atlet maraton! 🏃💨 Tapi intinya, keputusan ini sekarang sah, mutlak, dan dicatat oleh sistem! Selamat hari jadian ya! 🤪🥳❤️");
+            
+            // Buka kembali kunci menu atas
+            isLockedInTrap = false;
+            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('disabled-tab'));
+            
+            // Reset state menu rahasia ke kondisi normal
+            tahapTolak = 0;
+            document.getElementById('teks-tanya').innerText = "Kamu mau gak jadi pacar Kakak?";
+            document.getElementById('sub-tanya').innerText = "Tolong dijawab dengan jujur ya, Ayak.";
+            document.getElementById('btn-fake-crash').style.display = 'block';
+            
+            const btnTolak = document.getElementById('btn-tolak');
+            btnTolak.innerText = "Enggak 😜";
+            btnTolak.style.background = "linear-gradient(45deg, #ff3333, #cc0000)";
+            btnTolak.setAttribute("onclick", "prosesTolak()");
+
+            // Otomatis arahkan ke menu kado sebagai hadiah puncak setelah dia pasrah
+            const tabs = document.querySelectorAll('.menu-tab');
+            switchMenu('menu-gift', tabs[4]);
         }
 
         function pemicuFakeCrash() {
+            // Jika diklik saat terkunci, beri peringatan romantis di crash screen
             const overlay = document.getElementById('fake-error-overlay');
-            
-            // Kita ubah teks BSOD-nya jadi versi gombalan sebelum ditampilkan
             overlay.innerHTML = `
                 <p style="font-size: 1.5rem; margin-bottom: 20px;">:( A fatal attraction 0xHEART-BREAK has occurred.</p>
                 <p>Sistem mendeteksi detak jantung berlebih saat menatap mata Ayak.</p>
@@ -793,7 +826,7 @@
                 if(sisaWaktu <= 0) {
                     clearInterval(timer);
                     overlay.style.display = 'none';
-                    alert('Hayo... kaget ya dikira eror beneran? 😜 Selamat ulang tahun ya Ayak! Semoga harimu penuh senyum hari ini!');
+                    alert('Hayo... kaget ya dikira eror beneran? 😜 Yuk balik jawab pertanyaan tadi!');
                 }
             }, 1000);
         }
@@ -880,7 +913,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
             }
         }
 
-        // --- FIREWORKS GAME FINALE ---
+        // --- FIREWORKS ENGINE ---
         let particles = [];
         function createFirework(x, y) {
             const colors = ['#ff6584', '#ffac67', '#f9a826', '#4ad3ff', '#b57cff'];
@@ -934,7 +967,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
             document.getElementById("wish-form-container").style.display = "block";
         }
 
-        // --- WHATSAPP REDIRECT ENGINE ---
+        // --- WHATSAPP REDIRECT ---
         function sendWishToWhatsApp() {
             const wishText = document.getElementById("user-wish").value.trim();
             if (wishText === "") {
@@ -942,7 +975,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
                 return;
             }
 
-            const myPhoneNumber = "628xxxxxxxxxx"; 
+            const myPhoneNumber = "628xxxxxxxxxx"; // GANTI DENGAN NOMOR WA KAMU
             const fullMessage = `Halo Kak! Ini harapan dan doa aku di hari ulang tahunku:\n\n"${wishText}"`;
             const encodedMessage = encodeURIComponent(fullMessage);
             window.open(`https://api.whatsapp.com/send?phone=${myPhoneNumber}&text=${encodedMessage}`, '_blank');
