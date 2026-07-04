@@ -6,8 +6,8 @@
     <title>HBD Ayak! 🐾</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
-            --accent-color: #ff7597;
+            --bg-gradient: linear-gradient(135deg, #110f18 0%, #291a33 50%, #4a2840 100%);
+            --accent-color: #ff6584;
             --cat-color: #f9a826;
         }
 
@@ -28,7 +28,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
         .floating-bg {
@@ -42,18 +42,21 @@
             overflow: hidden;
         }
 
+        /* --- CONTAINER UTAMA DENGAN EFEK GLOW --- */
         .card-container {
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 35px 25px;
-            border-radius: 30px;
+            padding: 40px 25px;
+            border-radius: 35px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 30px rgba(255,255,255,0.05);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.6), 
+                        inset 0 0 30px rgba(255,255,255,0.05),
+                        0 0 40px rgba(255, 101, 132, 0.1);
             transform-style: preserve-3d;
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 480px;
+            transition: transform 0.2s ease-out, opacity 0.8s ease;
+            max-width: 450px;
             width: 90%;
             z-index: 10;
         }
@@ -65,29 +68,30 @@
         #page-surat {
             display: none;
             opacity: 0;
-            transform: scale(0.9) translateY(30px);
+            transform: scale(0.9) translateZ(50px);
         }
 
         h1, h2 {
-            font-size: 2.2rem;
-            background: linear-gradient(45deg, #ff7597, #ffb367);
+            font-size: 2.3rem;
+            background: linear-gradient(45deg, #ff6584, #ffac67);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             font-weight: 800;
             letter-spacing: 1px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
         }
 
         h2 {
             font-size: 1.8rem;
-            border-bottom: 2px dashed rgba(255, 117, 151, 0.4);
+            border-bottom: 2px dashed rgba(255, 101, 132, 0.3);
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
 
         p.message, .content-surat {
-            font-size: 1rem;
-            color: #f3f3f3;
+            font-size: 0.98rem;
+            color: #f0f0f0;
             line-height: 1.7;
         }
 
@@ -98,9 +102,9 @@
         .content-surat {
             text-align: justify;
             white-space: pre-line;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
-            padding-right: 5px;
+            padding-right: 8px;
             margin-top: 15px;
         }
 
@@ -108,34 +112,35 @@
             width: 4px;
         }
         .content-surat::-webkit-scrollbar-thumb {
-            background: rgba(255, 117, 151, 0.5);
+            background: rgba(255, 101, 132, 0.5);
             border-radius: 10px;
         }
 
-        /* --- MINI GALERI POLAROID (SLIDESHOW) --- */
+        /* --- BINGKAI POLAROID REALISTIS 3D --- */
         .polaroid-gallery {
             position: relative;
-            background: white;
-            padding: 12px 12px 35px 12px;
-            border-radius: 4px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            transform: rotate(-2deg);
+            background: #ffffff;
+            padding: 12px 12px 42px 12px;
+            border-radius: 2px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(-3deg) translateZ(30px);
             width: 220px;
-            margin: 0 auto 20px auto;
-            transition: transform 0.5s;
+            margin: 0 auto 25px auto;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         .polaroid-gallery:hover {
-            transform: rotate(1deg) scale(1.03);
+            transform: rotate(1deg) scale(1.05) translateZ(40px);
         }
 
         .polaroid-viewport {
             position: relative;
             width: 100%;
             height: 200px;
-            background: #ffe3e9;
-            border-radius: 2px;
+            background: #222;
+            border-radius: 1px;
             overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
         }
 
         .polaroid-slide {
@@ -145,7 +150,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.6s ease-in-out;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -162,15 +167,14 @@
             object-fit: cover;
         }
 
-        /* Tombol Navigasi Polaroid */
         .nav-btn {
             position: absolute;
-            bottom: 6px;
-            background: rgba(0, 0, 0, 0.1);
-            color: #333;
+            bottom: 8px;
+            background: rgba(0, 0, 0, 0.06);
+            color: #444;
             border: none;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             font-weight: bold;
             cursor: pointer;
@@ -178,23 +182,46 @@
             align-items: center;
             justify-content: center;
             z-index: 10;
-            font-size: 0.8rem;
-            transition: background 0.2s;
+            font-size: 0.75rem;
+            transition: all 0.2s;
         }
-        .nav-btn:hover { background: rgba(0, 0, 0, 0.2); }
+        .nav-btn:hover { background: rgba(0, 0, 0, 0.15); transform: scale(1.1); }
         .prev-btn { left: 15px; }
         .next-btn { right: 15px; }
 
         .gallery-caption {
             position: absolute;
-            bottom: 8px;
+            bottom: 12px;
             left: 0;
             width: 100%;
             text-align: center;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.75rem;
-            color: #555;
+            font-size: 0.8rem;
+            color: #333;
             font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- INTERACTIVE LOVE BUTTON --- */
+        .love-interaction-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 101, 132, 0.15);
+            border: 1px solid rgba(255, 101, 132, 0.3);
+            padding: 6px 15px;
+            border-radius: 20px;
+            color: #ff6584;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .love-interaction-btn:hover {
+            background: #ff6584;
+            color: white;
+            transform: scale(1.05);
         }
 
         /* --- PURE CSS ART: KUCING GEMAS --- */
@@ -242,23 +269,23 @@
         .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
         .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
 
-        /* --- TOMBOL --- */
+        /* --- BUTTONS --- */
         .btn-surprise {
             background: linear-gradient(45deg, var(--accent-color), #ff4b72);
             border: none;
-            padding: 14px 35px;
+            padding: 15px 40px;
             color: white;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 117, 151, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(255, 101, 132, 0.4);
+            transition: all 0.3s;
             font-size: 1rem;
             outline: none;
         }
         .btn-surprise:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 15px 30px rgba(255, 117, 151, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(255, 101, 132, 0.6);
         }
 
         .footer-note {
@@ -274,7 +301,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             backdrop-filter: blur(10px);
             width: 45px;
             height: 45px;
@@ -284,13 +311,13 @@
             align-items: center;
             cursor: pointer;
             z-index: 100;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.25);
             font-size: 1.2rem;
             transition: all 0.3s;
         }
 
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
         .floating-item {
             position: absolute;
@@ -299,6 +326,7 @@
             animation: floatUpward var(--speed) linear forwards;
             opacity: 0.6;
             font-size: var(--size);
+            z-index: 2;
         }
         @keyframes floatUpward {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
@@ -336,14 +364,13 @@
             <button class="btn-surprise" onclick="triggerSurprise()">Buka Sini 🎁</button>
         </div>
 
-        <!-- HALAMAN 2: SURAT + MULTI PHOTO MOMENT -->
+        <!-- HALAMAN 2: SURAT + INTERACTIVE SLIDESHOW -->
         <div id="page-surat">
             <h2>Pesan Buat Ayak ✨</h2>
             
-            <!-- FRAME BINGKAI GALERI POLAROID -->
+            <!-- BINGKAI INTERAKTIF -->
             <div class="polaroid-gallery">
                 <div class="polaroid-viewport">
-                    <!-- Semua Foto dari folder ayak.1 dengan format .jpeg -->
                     <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
                     <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
                     <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
@@ -352,11 +379,13 @@
                     <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
                 </div>
                 
-                <!-- Tombol Geser Foto -->
                 <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
                 <div class="gallery-caption">our moments ✨</div>
                 <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
             </div>
+
+            <!-- TOMBOL INTERAKSI LOVE -->
+            <button class="love-interaction-btn" onclick="burstHearts()">❤️ Click Me!</button>
 
             <div class="content-surat">
                 Selamat ulang tahun ya, Ayak! 🥳🎉
@@ -375,7 +404,41 @@
     </div>
 
     <script>
-        // --- LOGIK SLIDESHOW FOTO ---
+        // --- ANIMASI 3D TILT EFFECT MOUSE & GYROSCOPE ---
+        const card = document.getElementById('main-card');
+        
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+        });
+
+        // Untuk HP biar kalau dimiringin ikut gerak sedikit
+        window.addEventListener('deviceorientation', (e) => {
+            if(!e.gamma || !e.beta) return;
+            const xAxis = e.gamma / 2; 
+            const yAxis = (e.beta - 60) / 2;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+        });
+
+        // --- INTERAKTIF BURST HEARTS ---
+        function burstHearts() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-item';
+                    heart.innerText = '❤️';
+                    heart.style.left = (Math.random() * 60 + 20) + 'vw';
+                    heart.style.setProperty('--speed', (Math.random() * 2 + 2) + 's');
+                    heart.style.setProperty('--size', (Math.random() * 15 + 20) + 'px');
+                    heart.style.setProperty('--opac', Math.random() * 0.6 + 0.4);
+                    bgSpace.appendChild(heart);
+                    setTimeout(() => { heart.remove(); }, 4000);
+                }, i * 60);
+            }
+        }
+
+        // --- GALERI SLIDESHOW ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
 
@@ -385,7 +448,7 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // --- BACKROUND ANIMASI ---
+        // --- BACKROUND PARTIKEL ---
         const bgSpace = document.getElementById('bgSpace');
         const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
@@ -402,10 +465,9 @@
             bgSpace.appendChild(item);
             setTimeout(() => { item.remove(); }, 8000);
         }
-        
-        setInterval(spawnFloatingItem, 500);
+        setInterval(spawnFloatingItem, 600);
 
-        // --- AUDIO CONTROLLER ---
+        // --- AUDIO ---
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -421,40 +483,30 @@
             isPlaying = !isPlaying;
         }
 
-        // --- HANDLER KEJUTAN ---
+        // --- TRIGGER KEJUTAN ---
         function triggerSurprise() {
             if(!isPlaying) toggleMusic();
+            burstHearts();
 
-            for(let i = 0; i < 20; i++) {
-                setTimeout(spawnFloatingItem, i * 40);
-            }
+            const pageUtama = document.getElementById('page-utama');
+            const pageSurat = document.getElementById('page-surat');
 
+            pageUtama.style.transition = "opacity 0.4s ease";
+            pageUtama.style.opacity = "0";
+            
             setTimeout(() => {
-                alert("Kotaknya kebuka! Ada pesan singkat di dalam buat kamu.");
-                
-                const pageUtama = document.getElementById('page-utama');
-                const pageSurat = document.getElementById('page-surat');
-                const mainCard = document.getElementById('main-card');
-
-                pageUtama.style.transition = "opacity 0.4s ease";
-                pageUtama.style.opacity = "0";
+                pageUtama.style.display = "none";
+                pageSurat.style.display = "block";
                 
                 setTimeout(() => {
-                    pageUtama.style.display = "none";
-                    pageSurat.style.display = "block";
-                    
-                    setTimeout(() => {
-                        mainCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1.03)";
-                        pageSurat.style.transition = "all 0.7s ease";
-                        pageSurat.style.opacity = "1";
-                        pageSurat.style.transform = "scale(1) translateY(0)";
-                    }, 50);
-                }, 400);
-
-            }, 100);
+                    pageSurat.style.transition = "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+                    pageSurat.style.opacity = "1";
+                    pageSurat.style.transform = "scale(1) translateZ(0)";
+                }, 50);
+            }, 400);
         }
 
-        // Proteksi Inspect Element
+        // Anti-inspect standar
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
