@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Special Day For Ayak 🐾</title>
+    <title>HBD Ayak! 🐾</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
             --accent-color: #ff7597;
             --cat-color: #f9a826;
-            --mint-color: #a8ffb2;
         }
 
         * {
@@ -32,7 +31,6 @@
             perspective: 1000px;
         }
 
-        /* --- BACKGROUND FLOATING ELEMENTS --- */
         .floating-bg {
             position: fixed;
             top: 0;
@@ -44,13 +42,12 @@
             overflow: hidden;
         }
 
-        /* --- CONTAINER UTAMA --- */
         .card-container {
             background: rgba(255, 255, 255, 0.07);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 40px 30px;
+            padding: 35px 25px;
             border-radius: 30px;
             text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 30px rgba(255,255,255,0.05);
@@ -61,12 +58,10 @@
             z-index: 10;
         }
 
-        /* --- HALAMAN 1 --- */
         #page-utama {
             animation: fadeIn 1s ease;
         }
 
-        /* --- HALAMAN 2 (SURAT RAHASIA) --- */
         #page-surat {
             display: none;
             opacity: 0;
@@ -74,27 +69,26 @@
         }
 
         h1, h2 {
-            font-size: 2.4rem;
+            font-size: 2.2rem;
             background: linear-gradient(45deg, #ff7597, #ffb367);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             font-weight: 800;
             letter-spacing: 1px;
-            text-shadow: 0 0 20px rgba(255,117,151,0.2);
         }
 
         h2 {
-            font-size: 1.9rem;
+            font-size: 1.8rem;
             border-bottom: 2px dashed rgba(255, 117, 151, 0.4);
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
 
         p.message, .content-surat {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #f3f3f3;
-            line-height: 1.8;
+            line-height: 1.7;
         }
 
         p.message {
@@ -104,12 +98,12 @@
         .content-surat {
             text-align: justify;
             white-space: pre-line;
-            max-height: 250px;
+            max-height: 200px;
             overflow-y: auto;
             padding-right: 5px;
+            margin-top: 15px;
         }
 
-        /* Custom Scrollbar untuk Surat */
         .content-surat::-webkit-scrollbar {
             width: 4px;
         }
@@ -118,30 +112,89 @@
             border-radius: 10px;
         }
 
-        /* --- ESTETIK INSTAX PHOTO HOLDER --- */
-        .polaroid-frame {
+        /* --- MINI GALERI POLAROID (SLIDESHOW) --- */
+        .polaroid-gallery {
+            position: relative;
             background: white;
-            padding: 12px 12px 25px 12px;
+            padding: 12px 12px 35px 12px;
             border-radius: 4px;
             box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-            transform: rotate(-3deg);
-            width: 160px;
-            margin: 0 auto 25px auto;
+            transform: rotate(-2deg);
+            width: 220px;
+            margin: 0 auto 20px auto;
             transition: transform 0.5s;
         }
-        .polaroid-frame:hover {
-            transform: rotate(3deg) scale(1.05);
+        
+        .polaroid-gallery:hover {
+            transform: rotate(1deg) scale(1.03);
         }
-        .polaroid-photo {
+
+        .polaroid-viewport {
+            position: relative;
             width: 100%;
-            height: 140px;
+            height: 200px;
             background: #ffe3e9;
             border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .polaroid-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2.5rem;
-            overflow: hidden;
+        }
+
+        .polaroid-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .polaroid-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Tombol Navigasi Polaroid */
+        .nav-btn {
+            position: absolute;
+            bottom: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background: rgba(0, 0, 0, 0.2); }
+        .prev-btn { left: 15px; }
+        .next-btn { right: 15px; }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            color: #555;
+            font-weight: bold;
         }
 
         /* --- PURE CSS ART: KUCING GEMAS --- */
@@ -189,7 +242,7 @@
         .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
         .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
 
-        /* --- TOMBOL INTERAKTIF --- */
+        /* --- TOMBOL --- */
         .btn-surprise {
             background: linear-gradient(45deg, var(--accent-color), #ff4b72);
             border: none;
@@ -200,7 +253,7 @@
             cursor: pointer;
             box-shadow: 0 10px 25px rgba(255, 117, 151, 0.4);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 1.05rem;
+            font-size: 1rem;
             outline: none;
         }
         .btn-surprise:hover {
@@ -209,7 +262,7 @@
         }
 
         .footer-note {
-            margin-top: 35px;
+            margin-top: 25px;
             text-align: right;
             font-style: italic;
             color: #ffb367;
@@ -217,7 +270,6 @@
             font-size: 0.95rem;
         }
 
-        /* --- AUDIO PLAYER BUTTON (MINIMALIS) --- */
         .music-control {
             position: fixed;
             bottom: 20px;
@@ -237,7 +289,6 @@
             transition: all 0.3s;
         }
 
-        /* --- ANIMASI --- */
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -259,16 +310,14 @@
 </head>
 <body>
 
-    <!-- Musik Latar Otomatis/Manual Bawaan Luar -->
     <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
     <audio id="bgMusic" loop src="https://assets.mixkit.co/active_storage/sfx/123/123-100.wav"></audio> 
-    <!-- Catatan: Kamu bisa mengganti URL src audio di atas dengan link lagu .mp3 kesukaan Ayak jika punya tautan langsungnya -->
 
     <div class="floating-bg" id="bgSpace"></div>
 
     <div class="card-container" id="main-card">
         
-        <!-- HALAMAN 1: INTERAKSI KUCING & INTRO -->
+        <!-- HALAMAN 1 -->
         <div id="page-utama">
             <div class="cat-art">
                 <div class="ear left"><div class="ear-inner"></div></div>
@@ -281,42 +330,64 @@
                 </div>
             </div>
 
-            <h1>Happy Birthday, Ayak! 🐾</h1>
-            <p class="message">Ada satu boks paket kejutan digital misterius yang mendarat khusus buat kamu hari ini. Coba ketuk tombol di bawah buat unboxing opensourcenya! ✨</p>
+            <h1>HBD Ayak! 🐾</h1>
+            <p class="message">Ada titipan kiriman halaman web kecil dari Kakak buat kamu hari ini. Coba dibuka dulu kejutannya di bawah. ✨</p>
             
-            <button class="btn-surprise" onclick="triggerSurprise()">Buka Kejutannya 🎁</button>
+            <button class="btn-surprise" onclick="triggerSurprise()">Buka Sini 🎁</button>
         </div>
 
-        <!-- HALAMAN 2: SURAT & GALERI FOTO MINI (Lebih Dalam & Manis) -->
+        <!-- HALAMAN 2: SURAT + MULTI PHOTO MOMENT -->
         <div id="page-surat">
-            <h2>Special Message For Ayak ✨</h2>
+            <h2>Pesan Buat Ayak ✨</h2>
             
-            <!-- Foto Bingkai Polaroid Instax -->
-            <div class="polaroid-frame">
-                <!-- Kamu bisa mengganti teks emoji 🐱 di bawah ini dengan tag gambar asli kamu: <img src="foto-ayak.jpg" style="width:100%; height:100%; object-fit:cover;"> -->
-                <div class="polaroid-photo">🐱✨</div>
+            <!-- FRAME BINGKAI GALERI POLAROID -->
+            <div class="polaroid-gallery">
+                <div class="polaroid-viewport">
+                    <!-- Semua Foto dari folder ayak.1 dengan format .jpeg -->
+                    <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
+                    <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
+                    <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
+                    <div class="polaroid-slide"><img src="ayak.1/ay4.jpeg" alt="Moment 4"></div>
+                    <div class="polaroid-slide"><img src="ayak.1/ay5.jpeg" alt="Moment 5"></div>
+                    <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
+                </div>
+                
+                <!-- Tombol Geser Foto -->
+                <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
+                <div class="gallery-caption">our moments ✨</div>
+                <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
             </div>
 
             <div class="content-surat">
-                Hai Ayak! Selamat bertambah usia yaaa 🥳🎉
+                Selamat ulang tahun ya, Ayak! 🥳🎉
 
-                Di hari yang luar biasa ini, aku sengaja rakit halaman web ini khusus cuma buat kamu. Aku pengen mastiin kalau hari ini ada satu senyuman kecil yang terukir di wajah kamu pas ngebaca ini.
+                Sengaja Kakak buatin halaman web sederhana ini biar hari ulang tahunmu kali ini ada variasi hiburan yang beda sedikit.
 
-                Terima kasih ya sudah bertahan, berjuang, dan selalu jadi orang yang luar biasa hebat sampai detik ini. Semoga di babak usia yang baru ini, segala langkahmu selalu dimudahkan, harimu dipenuhi canda tawa, urusanmu dilancarkan, dan pastinya didekatkan dengan hal-hal baik (plus kucing-kucing lucu di sekitarmu!).
+                Semoga di usia yang baru ini, kuliahmu dilancarkan, segala urusan ke depannya dipermudah, sehat terus, dan tentunya selalu dikelilingi hal-hal baik setiap hari. 
 
-                Kalau dunia lagi terasa melelahkan, inget ya kalau kamu berharga banget. Jangan lupa buat selalu tersenyum dan bahagia hari ini, besok, dan seterusnya! Meeeoww~ 🐾
+                Tetap semangat menjalani rutinitas harianmu. Jangan lupa istirahat kalau capek, jalani hari dengan santai, dan pastinya jangan lupa buat tersenyum hari ini! 
             </div>
             <div class="footer-note">
-                – Dibuat sepenuh hati buat Ayak 🎈
+                – Dari Kakak 🎈
             </div>
         </div>
 
     </div>
 
     <script>
-        // 1. Pembuat Elemen Terbang Otomatis (Hearts, Stars, Paws)
+        // --- LOGIK SLIDESHOW FOTO ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.polaroid-slide');
+
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // --- BACKROUND ANIMASI ---
         const bgSpace = document.getElementById('bgSpace');
-        const items = ['💖', '✨', '🐾', '🎈', '🐱', '🌸'];
+        const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
         function spawnFloatingItem() {
             const item = document.createElement('div');
@@ -326,16 +397,15 @@
             item.style.left = Math.random() * 100 + 'vw';
             item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
             item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
-            item.style.setProperty('--opac', Math.random() * 0.5 + 0.3);
+            item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
             
             bgSpace.appendChild(item);
             setTimeout(() => { item.remove(); }, 8000);
         }
         
-        // Jalankan background mengalir secara konstan
-        setInterval(spawnFloatingItem, 400);
+        setInterval(spawnFloatingItem, 500);
 
-        // 2. Musik Kontrol
+        // --- AUDIO CONTROLLER ---
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -351,25 +421,21 @@
             isPlaying = !isPlaying;
         }
 
-        // 3. Efek Transisi Meledak & Pengungkapan Surat
+        // --- HANDLER KEJUTAN ---
         function triggerSurprise() {
-            // Putar musik otomatis saat tombol diklik ( bypass aturan browser )
             if(!isPlaying) toggleMusic();
 
-            // Efek hujan balon/hati instan saat tombol ditekan
-            for(let i = 0; i < 25; i++) {
-                setTimeout(spawnFloatingItem, i * 30);
+            for(let i = 0; i < 20; i++) {
+                setTimeout(spawnFloatingItem, i * 40);
             }
 
-            // Memunculkan pesan pop-up interaktif manis sebelum masuk surat
             setTimeout(() => {
-                alert("Meoww! 🐱 Kotak kejutannya berhasil dibuka! Ada pesan rahasia di dalam yang nungguin Ayak...");
+                alert("Kotaknya kebuka! Ada pesan singkat di dalam buat kamu.");
                 
                 const pageUtama = document.getElementById('page-utama');
                 const pageSurat = document.getElementById('page-surat');
                 const mainCard = document.getElementById('main-card');
 
-                // Efek fade-out halaman pertama
                 pageUtama.style.transition = "opacity 0.4s ease";
                 pageUtama.style.opacity = "0";
                 
@@ -377,10 +443,9 @@
                     pageUtama.style.display = "none";
                     pageSurat.style.display = "block";
                     
-                    // Efek Pop-In halaman surat baru yang dinamis
                     setTimeout(() => {
                         mainCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1.03)";
-                        pageSurat.style.transition = "all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+                        pageSurat.style.transition = "all 0.7s ease";
                         pageSurat.style.opacity = "1";
                         pageSurat.style.transform = "scale(1) translateY(0)";
                     }, 50);
@@ -389,7 +454,7 @@
             }, 100);
         }
 
-        // 4. Fitur Keamanan Anti-Kepo (Klik kanan & F12)
+        // Proteksi Inspect Element
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
