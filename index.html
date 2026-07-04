@@ -179,7 +179,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            z-index: 20;
             font-size: 0.75rem;
             transition: all 0.2s;
         }
@@ -201,18 +201,20 @@
         }
 
         .love-interaction-btn {
+            position: relative;
             display: inline-flex;
             align-items: center;
             gap: 5px;
             background: rgba(255, 101, 132, 0.15);
             border: 1px solid rgba(255, 101, 132, 0.3);
-            padding: 6px 15px;
+            padding: 8px 20px;
             border-radius: 20px;
             color: #ff6584;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             cursor: pointer;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
             font-weight: 600;
+            z-index: 30;
             transition: all 0.3s;
         }
         .love-interaction-btn:hover {
@@ -340,6 +342,7 @@
 
     <div class="card-container" id="main-card">
         
+        <!-- HALAMAN 1 -->
         <div id="page-utama">
             <div class="cat-art">
                 <div class="ear left"><div class="ear-inner"></div></div>
@@ -358,6 +361,7 @@
             <button class="btn-surprise" onclick="triggerSurprise()">Buka Sini 🎁</button>
         </div>
 
+        <!-- HALAMAN 2 -->
         <div id="page-surat">
             <h2>Pesan Buat Ayak ✨</h2>
             
@@ -376,7 +380,8 @@
                 <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
             </div>
 
-            <button class="love-interaction-btn" onclick="burstHearts()">❤️ Click Me!</button>
+            <!-- Tombol Love Interaktif -->
+            <button class="love-interaction-btn" onclick="burstHearts(event)">❤️ Click Me!</button>
 
             <div class="content-surat">
                 Selamat ulang tahun ya, Ayak! 🥳🎉
@@ -396,7 +401,10 @@
 
     <script>
         const card = document.getElementById('main-card');
+        const bgSpace = document.getElementById('bgSpace');
+        const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
+        // Tilt Effect
         document.addEventListener('mousemove', (e) => {
             const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
             const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
@@ -410,13 +418,15 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        function burstHearts() {
+        // Semburan Hati (Diperbaiki agar tidak memblokir tombol klik)
+        function burstHearts(e) {
+            if(e) e.stopPropagation();
             for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'floating-item';
                     heart.innerText = '❤️';
-                    heart.style.left = (Math.random() * 60 + 20) + 'vw';
+                    heart.style.left = (Math.random() * 80 + 10) + 'vw';
                     heart.style.setProperty('--speed', (Math.random() * 2 + 2) + 's');
                     heart.style.setProperty('--size', (Math.random() * 15 + 20) + 'px');
                     heart.style.setProperty('--opac', Math.random() * 0.6 + 0.4);
@@ -426,6 +436,7 @@
             }
         }
 
+        // Slideshow Galeri Foto
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
 
@@ -435,9 +446,7 @@
             slides[currentSlide].classList.add('active');
         }
 
-        const bgSpace = document.getElementById('bgSpace');
-        const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
-        
+        // Partikel Latar Belakang
         function spawnFloatingItem() {
             const item = document.createElement('div');
             item.className = 'floating-item';
@@ -453,6 +462,7 @@
         }
         setInterval(spawnFloatingItem, 600);
 
+        // Kontrol Musik
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -462,14 +472,15 @@
                 audio.pause();
                 musicBtn.innerText = '🔇';
             } else {
-                audio.play().catch((err) => { console.log("Audio play blocked", err); });
+                audio.play().catch((err) => { console.log("Audio blocked", err); });
                 musicBtn.innerText = '🎵';
             }
             isPlaying = !isPlaying;
         }
 
+        // Pembuka Kejutan
         function triggerSurprise() {
-            toggleMusic();
+            if(!isPlaying) toggleMusic();
             burstHearts();
 
             const pageUtama = document.getElementById('page-utama');
@@ -490,12 +501,8 @@
             }, 400);
         }
 
+        // Proteksi klik kanan dasar
         document.addEventListener('contextmenu', event => event.preventDefault());
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
-                e.preventDefault();
-            }
-        });
     </script>
 </body>
 </html>
