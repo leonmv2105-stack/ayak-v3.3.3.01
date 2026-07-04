@@ -712,10 +712,10 @@
 
         // --- NAVIGATION TAB HANDLING ---
         let letterTyped = false;
-        let isLockedInTrap = false; // Status apakah menu sedang terkunci
+        let isLockedInTrap = false; 
 
         function switchMenu(menuId, tabElement) {
-            // JIKA MENU SEDANG TERKUNCI, cegah perpindahan halaman!
+            // JIKA MENU SEDANG TERKUNCI, blokir navigasi
             if (isLockedInTrap && menuId !== 'menu-trap') {
                 alert("Eits! Nggak bisa kabur ke menu lain! Pertanyaannya harus dijawab dulu ya! 😜🔒");
                 return;
@@ -732,10 +732,9 @@
                 typeWriter(suratText, 0);
             }
             
-            // JIKA USER MASUK KE MENU RAHASIA, AKTIFKAN LOCK!
+            // JIKA MASUK MENU RAHASIA, AKTIFKAN PENGUNCI
             if (menuId === 'menu-trap') {
                 isLockedInTrap = true;
-                // Tambahkan efek visual redup pada tab navigasi lain agar kelihatan kekunci
                 document.querySelectorAll('.menu-tab').forEach(tab => {
                     if(tab !== tabElement) tab.classList.add('disabled-tab');
                 });
@@ -763,7 +762,6 @@
             if (tahapTolak === 3) {
                 teksTanya.innerText = daftarPertanyaan[3];
                 document.getElementById('sub-tanya').innerText = "Sudah dikunci, tidak bisa dilewati! Hahaha 🔒";
-                // Sembunyikan juga tombol fake crash biar dia fokus terpojok
                 document.getElementById('btn-fake-crash').style.display = 'none';
                 
                 btnTolak.innerText = "Harus Mau! 🤪";
@@ -775,14 +773,14 @@
         function terimaCinta() {
             burstHearts('💖');
             
-            // PESAN MANIS & MAAF YANG MEMAKSA KARENA SUSAH DIKEJAR
-            alert("Maaf ya kalau Kakak agak maksa begini... Sumpah, abisnya kamunya itu susah banget dikejar, lari mulu kek atlet maraton! 🏃💨 Tapi intinya, keputusan ini sekarang sah, mutlak, dan dicatat oleh sistem! Selamat hari jadian ya! 🤪🥳❤️");
+            // PESAN UTAMA TERMASUK PERMINTAAN MAAF KARENA SUSAH DIKEJAR
+            alert("Maaf ya kalau Kakak agak maksa begini... Habisnya kamunya susah banget dikejar, mainnya lari-larian mulu! 🏃💨 Tapi intinya, keputusan ini sekarang sah, mutlak, dan tidak bisa diganggu gugat oleh sistem! Selamat hari jadian ya! 🤪🥳❤️");
             
-            // Buka kembali kunci menu atas
+            // Buka kunci navigasi
             isLockedInTrap = false;
             document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('disabled-tab'));
             
-            // Reset state menu rahasia ke kondisi normal
+            // Kembalikan tombol ke kondisi awal
             tahapTolak = 0;
             document.getElementById('teks-tanya').innerText = "Kamu mau gak jadi pacar Kakak?";
             document.getElementById('sub-tanya').innerText = "Tolong dijawab dengan jujur ya, Ayak.";
@@ -793,13 +791,12 @@
             btnTolak.style.background = "linear-gradient(45deg, #ff3333, #cc0000)";
             btnTolak.setAttribute("onclick", "prosesTolak()");
 
-            // Otomatis arahkan ke menu kado sebagai hadiah puncak setelah dia pasrah
+            // Otomatis pindah ke halaman Kado
             const tabs = document.querySelectorAll('.menu-tab');
             switchMenu('menu-gift', tabs[4]);
         }
 
         function pemicuFakeCrash() {
-            // Jika diklik saat terkunci, beri peringatan romantis di crash screen
             const overlay = document.getElementById('fake-error-overlay');
             overlay.innerHTML = `
                 <p style="font-size: 1.5rem; margin-bottom: 20px;">:( A fatal attraction 0xHEART-BREAK has occurred.</p>
