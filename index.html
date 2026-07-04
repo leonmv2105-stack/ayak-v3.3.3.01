@@ -358,7 +358,7 @@
             <h1>HBD Ayak! 🐾</h1>
             <p class="message">Ada titipan kiriman halaman web kecil dari Kakak buat kamu hari ini. Coba dibuka dulu kejutannya di bawah. ✨</p>
             
-            <button class="btn-surprise" onclick="triggerSurprise()">Buka Sini 🎁</button>
+            <button class="btn-surprise" onclick="startSurpriseChain()">Buka Sini 🎁</button>
         </div>
 
         <!-- HALAMAN 2 -->
@@ -380,7 +380,6 @@
                 <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
             </div>
 
-            <!-- Tombol Love Interaktif -->
             <button class="love-interaction-btn" onclick="burstHearts(event)">❤️ Click Me!</button>
 
             <div class="content-surat">
@@ -418,21 +417,22 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // Semburan Hati (Diperbaiki agar tidak memblokir tombol klik)
-        function burstHearts(e) {
+        // Semburan Hati / Emoji Kucing Berguling
+        function burstHearts(e, customEmoji) {
             if(e) e.stopPropagation();
-            for (let i = 0; i < 15; i++) {
+            const emoji = customEmoji || '❤️';
+            for (let i = 0; i < 18; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'floating-item';
-                    heart.innerText = '❤️';
+                    heart.innerText = emoji;
                     heart.style.left = (Math.random() * 80 + 10) + 'vw';
-                    heart.style.setProperty('--speed', (Math.random() * 2 + 2) + 's');
-                    heart.style.setProperty('--size', (Math.random() * 15 + 20) + 'px');
-                    heart.style.setProperty('--opac', Math.random() * 0.6 + 0.4);
+                    heart.style.setProperty('--speed', (Math.random() * 2 + 1.5) + 's');
+                    heart.style.setProperty('--size', (Math.random() * 20 + 20) + 'px');
+                    heart.style.setProperty('--opac', Math.random() * 0.7 + 0.3);
                     bgSpace.appendChild(heart);
-                    setTimeout(() => { heart.remove(); }, 4000);
-                }, i * 60);
+                    setTimeout(() => { heart.remove(); }, 3500);
+                }, i * 50);
             }
         }
 
@@ -478,11 +478,38 @@
             isPlaying = !isPlaying;
         }
 
-        // Pembuka Kejutan
-        function triggerSurprise() {
-            if(!isPlaying) toggleMusic();
-            burstHearts();
+        // --- SISTEM POP-UP BERUNTUN BIAR TERSENYUM LEBAR ---
+        const alerts = [
+            "Cieee ada yang nungguin ucapan yaaa? 😜",
+            "Yakin nih mau buka isi pesannya sekarang? 🤔",
+            "Bentar... kumpulin dulu senyumnya yang manis! 🥰",
+            "Oke, hitungan ketiga ya...",
+            "1... 🐾",
+            "2... 🐱",
+            "3!!! Selamat melihat kejutan utamanya, Ayak! 🎉🥳"
+        ];
 
+        function runAlertChain(index) {
+            if (index < alerts.length) {
+                // Semburkan emoji kucing setiap pop-up muncul biar rame
+                burstHearts(null, '🐱'); 
+                setTimeout(() => {
+                    alert(alerts[index]);
+                    runAlertChain(index + 1);
+                }, 150);
+            } else {
+                // Masuk ke halaman surat utama
+                showMainSurat();
+            }
+        }
+
+        function startSurpriseChain() {
+            if(!isPlaying) toggleMusic();
+            runAlertChain(0);
+        }
+
+        function showMainSurat() {
+            burstHearts(null, '✨');
             const pageUtama = document.getElementById('page-utama');
             const pageSurat = document.getElementById('page-surat');
 
@@ -501,7 +528,6 @@
             }, 400);
         }
 
-        // Proteksi klik kanan dasar
         document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
