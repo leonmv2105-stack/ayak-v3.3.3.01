@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD! 🐾</title>
+    <style>
+        /* --- ADVANCED & COMPLEX CSS DESIGN --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --accent-color: #ff7597;
+            --cat-color: #f9a826;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Mencegah teks di-blok/copy */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        /* Container Utama dengan Efek Glassmorphism 3D */
+        .card-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            transform-style: preserve-3d;
+            transform: rotateX(10deg) rotateY(-10deg);
+            transition: transform 0.5s ease;
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+        }
+
+        .card-container:hover {
+            transform: rotateX(0deg) rotateY(0deg) scale(1.02);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ff7597, #f9a826);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        p.message {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* --- PURE CSS ART: KUCING SULIT DITIRU --- */
+        /* Kucing ini dibuat manual dengan CSS shapes, bukan aset eksternal */
+        .cat-art {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px auto;
+        }
+
+        .cat-head {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 120px;
+            height: 100px;
+            background: var(--cat-color);
+            border-radius: 50% 50% 45% 45%;
+        }
+
+        .ear {
+            position: absolute;
+            top: -15px;
+            width: 40px;
+            height: 50px;
+            background: var(--cat-color);
+            border-radius: 30% 70% 30% 40%;
+        }
+        .ear.left { left: 5px; transform: rotate(-20deg); }
+        .ear.right { right: 5px; transform: rotate(20deg); border-radius: 70% 30% 40% 30%; }
+
+        .ear-inner {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 8px;
+            width: 24px;
+            height: 35px;
+            background: #ff8da1;
+            border-radius: inherit;
+        }
+
+        .eye {
+            position: absolute;
+            top: 35px;
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+        .eye.left { left: 25px; }
+        .eye.right { right: 25px; }
+        .eye::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 12px;
+            height: 12px;
+            background: #111;
+            border-radius: 50%;
+        }
+
+        .nose {
+            position: absolute;
+            top: 58px;
+            left: 55px;
+            width: 10px;
+            height: 8px;
+            background: #ff8da1;
+            border-radius: 50% 50% 60% 60%;
+        }
+
+        .mouth {
+            position: absolute;
+            top: 64px;
+            left: 50px;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #553c11;
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* --- INTERACTIVE BUTTON --- */
+        .btn-surprise {
+            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
+            border: none;
+            padding: 12px 28px;
+            color: white;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 117, 151, 0.4);
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-surprise:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 117, 151, 0.6);
+        }
+
+        /* --- PARTIKEL SULIT DITIRU (DIBUAT LEWAT JS) --- */
+        .paw-particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+            background: rgba(255, 117, 151, 0.7);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: floatUp 2s linear forwards;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(255,117,151,0.5); }
+            to { text-shadow: 0 0 20px rgba(249,168,38,0.8); }
+        }
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container">
+        <!-- Struktur Kucing CSS Art murni -->
+        <div class="cat-art">
+            <div class="ear left"><div class="ear-inner"></div></div>
+            <div class="ear-right ear"><div class="ear-inner"></div></div>
+            <div class="cat-head">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="nose"></div>
+                <div class="mouth"></div>
+            </div>
+        </div>
+
+        <h1>Selamat Ulang Tahun! 🐾</h1>
+        <p class="message">Semoga hari-harimu selalu dipenuhi kebahagiaan, rezeki yang lancar, dan dikelilingi oleh hal-hal lucu seperti kucing kesayanganmu! Tetap jadi orang yang luar biasa ya!</p>
+        
+        <button class="btn-surprise" onclick="triggerSurprise()">Klik Kejutan ✨</button>
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT PROTEKSI & INTERAKTIF ADVANCED --- */
+
+        // 1. Fitur Interaktif: Efek Jejak Kaki/Partikel Mengikuti Kursor
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.85) { // Membatasi jumlah partikel agar tidak lag
+                createParticle(e.pageX, e.pageY);
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'paw-particle';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            // Variasi acak ukuran dan warna halus
+            const size = Math.random() * 15 + 10;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 2000);
+        }
+
+        // 2. Fitur Kejutan Saat Tombol Di-klik
+        function triggerSurprise() {
+            alert("Meoww! 🐱 Ada salam hangat dari semua kucing di dunia! Semoga semua impianmu terwujud nyata tahun ini!");
+            // Efek ledakan partikel
+            for(let i=0; i<30; i++) {
+                setTimeout(() => {
+                    createParticle(window.innerWidth/2 + (Math.random() - 0.5)*300, window.innerHeight/2 + (Math.random() - 0.5)*300);
+                }, i * 50);
+            }
+        }
+
+        // 3. CODE PROTECTION (Membuat Kode Sulit Dicontek Orang Awam)
+        // Memblokir Klik Kanan
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Memblokir Shortcut F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+        document.addEventListener('keydown', (e) => {
+            if (
+                e.key === 'F12' ||
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && e.key === 'U')
+            ) {
+                e.preventDefault();
+                alert("Eits, mau ngapain? Kodenya dilindungi ilmu IT tingkat tinggi! 🐾");
+            }
+        });
+    </script>
+</body>
+</html>
