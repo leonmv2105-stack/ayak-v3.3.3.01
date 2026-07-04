@@ -42,7 +42,6 @@
             overflow: hidden;
         }
 
-        /* --- CONTAINER UTAMA DENGAN EFEK GLOW --- */
         .card-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(30px);
@@ -116,7 +115,6 @@
             border-radius: 10px;
         }
 
-        /* --- BINGKAI POLAROID REALISTIS 3D --- */
         .polaroid-gallery {
             position: relative;
             background: #ffffff;
@@ -202,7 +200,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- INTERACTIVE LOVE BUTTON --- */
         .love-interaction-btn {
             display: inline-flex;
             align-items: center;
@@ -224,7 +221,6 @@
             transform: scale(1.05);
         }
 
-        /* --- PURE CSS ART: KUCING GEMAS --- */
         .cat-art {
             position: relative;
             width: 140px;
@@ -269,7 +265,6 @@
         .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
         .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
 
-        /* --- BUTTONS --- */
         .btn-surprise {
             background: linear-gradient(45deg, var(--accent-color), #ff4b72);
             border: none;
@@ -339,13 +334,12 @@
 <body>
 
     <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
-    <audio id="bgMusic" loop src="https://assets.mixkit.co/active_storage/sfx/123/123-100.wav"></audio> 
+    <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
 
     <div class="floating-bg" id="bgSpace"></div>
 
     <div class="card-container" id="main-card">
         
-        <!-- HALAMAN 1 -->
         <div id="page-utama">
             <div class="cat-art">
                 <div class="ear left"><div class="ear-inner"></div></div>
@@ -364,11 +358,9 @@
             <button class="btn-surprise" onclick="triggerSurprise()">Buka Sini 🎁</button>
         </div>
 
-        <!-- HALAMAN 2: SURAT + INTERACTIVE SLIDESHOW -->
         <div id="page-surat">
             <h2>Pesan Buat Ayak ✨</h2>
             
-            <!-- BINGKAI INTERAKTIF -->
             <div class="polaroid-gallery">
                 <div class="polaroid-viewport">
                     <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
@@ -384,7 +376,6 @@
                 <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
             </div>
 
-            <!-- TOMBOL INTERAKSI LOVE -->
             <button class="love-interaction-btn" onclick="burstHearts()">❤️ Click Me!</button>
 
             <div class="content-surat">
@@ -404,7 +395,6 @@
     </div>
 
     <script>
-        // --- ANIMASI 3D TILT EFFECT MOUSE & GYROSCOPE ---
         const card = document.getElementById('main-card');
         
         document.addEventListener('mousemove', (e) => {
@@ -413,7 +403,6 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // Untuk HP biar kalau dimiringin ikut gerak sedikit
         window.addEventListener('deviceorientation', (e) => {
             if(!e.gamma || !e.beta) return;
             const xAxis = e.gamma / 2; 
@@ -421,7 +410,6 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // --- INTERAKTIF BURST HEARTS ---
         function burstHearts() {
             for (let i = 0; i < 15; i++) {
                 setTimeout(() => {
@@ -438,7 +426,6 @@
             }
         }
 
-        // --- GALERI SLIDESHOW ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
 
@@ -448,7 +435,6 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // --- BACKROUND PARTIKEL ---
         const bgSpace = document.getElementById('bgSpace');
         const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
@@ -467,7 +453,6 @@
         }
         setInterval(spawnFloatingItem, 600);
 
-        // --- AUDIO ---
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -477,15 +462,14 @@
                 audio.pause();
                 musicBtn.innerText = '🔇';
             } else {
-                audio.play().catch(() => {});
+                audio.play().catch((err) => { console.log("Audio play blocked", err); });
                 musicBtn.innerText = '🎵';
             }
             isPlaying = !isPlaying;
         }
 
-        // --- TRIGGER KEJUTAN ---
         function triggerSurprise() {
-            if(!isPlaying) toggleMusic();
+            toggleMusic();
             burstHearts();
 
             const pageUtama = document.getElementById('page-utama');
@@ -506,7 +490,6 @@
             }, 400);
         }
 
-        // Anti-inspect standar
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
