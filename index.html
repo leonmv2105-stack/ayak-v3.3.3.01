@@ -6,9 +6,10 @@
     <title>HBD Ayak! 🐾</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #110f18 0%, #291a33 50%, #4a2840 100%);
+            --bg-gradient: linear-gradient(135deg, #0d0a14 0%, #1b1124 50%, #2b1428 100%);
             --accent-color: #ff6584;
             --cat-color: #f9a826;
+            --hacker-green: #00ff66;
         }
 
         * {
@@ -21,14 +22,109 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-gradient);
+            background: #050508;
             color: #fff;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             perspective: 1200px;
+        }
+
+        /* --- HACKER LOADING SCREEN SCREEN --- */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .loader-console {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(10, 10, 15, 0.85);
+            border: 1px solid var(--hacker-green);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+            z-index: 2;
+        }
+
+        .console-log {
+            height: 150px;
+            overflow-y: hidden;
+            font-size: 0.85rem;
+            color: var(--hacker-green);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.2);
+            height: 25px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00aa44, var(--hacker-green));
+            box-shadow: 0 0 10px var(--hacker-green);
+            transition: width 0.1s linear;
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        /* --- INTERFACE UTAMA --- */
+        #main-interface {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 20px 0;
         }
 
         .floating-bg {
@@ -54,107 +150,125 @@
         }
 
         .card-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 40px 25px;
-            border-radius: 35px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 30px 20px;
+            border-radius: 30px;
             text-align: center;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.6), 
-                        inset 0 0 30px rgba(255,255,255,0.05),
-                        0 0 40px rgba(255, 101, 132, 0.1);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 40px rgba(255, 101, 132, 0.05);
             transform-style: preserve-3d;
-            transition: transform 0.2s ease-out, opacity 0.8s ease;
-            max-width: 450px;
-            width: 90%;
+            transition: transform 0.2s ease-out;
+            max-width: 480px;
+            width: 92%;
             z-index: 10;
+            margin: auto;
         }
 
-        #page-utama {
-            animation: fadeIn 1s ease;
+        /* --- SISTEM MENU NAVIGATION --- */
+        .menu-navigation {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 6px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        #page-surat {
+        .menu-tab {
+            padding: 10px 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.6);
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .menu-tab.active {
+            color: #fff;
+            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
+            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
+        }
+
+        /* --- KONTEN SETIAP MENU --- */
+        .menu-content {
             display: none;
-            opacity: 0;
-            transform: scale(0.9) translateZ(50px);
+            animation: tabFadeIn 0.5s ease forwards;
+        }
+
+        .menu-content.active {
+            display: block;
+        }
+
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1, h2 {
-            font-size: 2.3rem;
+            font-size: 2rem;
             background: linear-gradient(45deg, #ff6584, #ffac67);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             font-weight: 800;
-            letter-spacing: 1px;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
         }
 
-        h2 {
-            font-size: 1.8rem;
-            border-bottom: 2px dashed rgba(255, 101, 132, 0.3);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+        /* Menu 1: Beranda / Cat Art */
+        .cat-art {
+            position: relative;
+            width: 130px;
+            height: 110px;
+            margin: 0 auto 20px auto;
         }
+        .cat-head {
+            position: absolute;
+            bottom: 0;
+            left: 5px;
+            width: 120px;
+            height: 90px;
+            background: var(--cat-color);
+            border-radius: 50% 50% 45% 45%;
+            z-index: 2;
+        }
+        .ear { position: absolute; top: 10px; width: 45px; height: 50px; background: var(--cat-color); z-index: 1; }
+        .ear.left { left: 5px; transform: rotate(-25deg); border-radius: 30% 70% 30% 40%; }
+        .ear.right { right: 5px; transform: rotate(25deg); border-radius: 70% 30% 40% 30%; }
+        .ear-inner { position: absolute; top: 8px; width: 24px; height: 32px; background: #ff8da1; }
+        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
+        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
+        .eye { position: absolute; top: 30px; width: 18px; height: 18px; background: #fff; border-radius: 50%; animation: blink 4s infinite; }
+        .eye.left { left: 25px; } .eye.right { right: 25px; }
+        .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 9px; height: 9px; background: #111; border-radius: 50%; }
+        .nose { position: absolute; top: 50px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
+        .mouth { position: absolute; top: 56px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
 
-        p.message, .content-surat {
-            font-size: 0.98rem;
-            color: #f0f0f0;
-            line-height: 1.7;
-        }
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
 
-        p.message {
-            margin-bottom: 35px;
-        }
-
-        .content-surat {
-            text-align: justify;
-            white-space: pre-line;
-            max-height: 220px;
-            overflow-y: auto;
-            padding-right: 8px;
-            margin-top: 15px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .content-surat::-webkit-scrollbar {
-            width: 4px;
-        }
-        .content-surat::-webkit-scrollbar-thumb {
-            background: rgba(255, 101, 132, 0.5);
-            border-radius: 10px;
-        }
-
+        /* Menu 2: Galeri Foto */
         .polaroid-gallery {
             position: relative;
             background: #ffffff;
             padding: 12px 12px 42px 12px;
             border-radius: 2px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.2);
-            transform: rotate(-3deg) translateZ(30px);
-            width: 220px;
-            margin: 0 auto 25px auto;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
-        .polaroid-gallery:hover {
-            transform: rotate(1deg) scale(1.05) translateZ(40px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transform: rotate(-2deg);
+            width: 210px;
+            margin: 10px auto 20px auto;
         }
 
         .polaroid-viewport {
             position: relative;
             width: 100%;
-            height: 200px;
+            height: 190px;
             background: #222;
-            border-radius: 1px;
             overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
         }
 
         .polaroid-slide {
@@ -164,22 +278,11 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.6s ease-in-out;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            transition: opacity 0.5s ease-in-out;
         }
 
-        .polaroid-slide.active {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .polaroid-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .polaroid-slide.active { opacity: 1; z-index: 2; }
+        .polaroid-slide img { width: 100%; height: 100%; object-fit: cover; }
 
         .nav-btn {
             position: absolute;
@@ -197,114 +300,53 @@
             justify-content: center;
             z-index: 20;
             font-size: 0.75rem;
-            transition: all 0.2s;
         }
-        .nav-btn:hover { background: rgba(0, 0, 0, 0.15); transform: scale(1.1); }
-        .prev-btn { left: 15px; }
-        .next-btn { right: 15px; }
+        .prev-btn { left: 15px; } .next-btn { right: 15px; }
+        .gallery-caption { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #333; font-weight: bold; }
 
-        .gallery-caption {
-            position: absolute;
-            bottom: 12px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.8rem;
-            color: #333;
+        /* Menu 3: Surat Pembaca */
+        .content-surat {
+            text-align: justify;
+            white-space: pre-line;
+            max-height: 240px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .content-surat::-webkit-scrollbar { width: 4px; }
+        .content-surat::-webkit-scrollbar-thumb { background: rgba(255, 101, 132, 0.4); border-radius: 10px; }
+
+        .footer-note {
+            margin-top: 15px;
+            text-align: right;
+            font-style: italic;
+            color: #ffb367;
             font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 25px;
-            position: relative;
-            min-height: 60px;
-        }
-
-        .btn-surprise {
-            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
-            border: none;
-            padding: 12px 30px;
-            color: white;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 101, 132, 0.4);
-            transition: all 0.3s;
-            font-size: 0.95rem;
-            outline: none;
-            z-index: 10;
-        }
-        .btn-surprise:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(255, 101, 132, 0.6);
-        }
-
-        #btn-no {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #eee;
-            padding: 12px 30px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.95rem;
-            position: relative;
-            z-index: 5;
-        }
-
-        .love-interaction-btn {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255, 101, 132, 0.15);
-            border: 1px solid rgba(255, 101, 132, 0.3);
-            padding: 8px 20px;
-            border-radius: 20px;
-            color: #ff6584;
             font-size: 0.9rem;
-            cursor: pointer;
-            margin-bottom: 15px;
-            font-weight: 600;
-            z-index: 30;
-            transition: all 0.3s;
-        }
-        .love-interaction-btn:hover {
-            background: #ff6584;
-            color: white;
-            transform: scale(1.05);
         }
 
+        /* Menu 4: Kejutan & Harapan */
         .gift-box-final {
             display: inline-block;
-            margin: 20px auto 10px auto;
-            font-size: 2.5rem;
+            margin: 15px auto;
+            font-size: 2.8rem;
             cursor: pointer;
             animation: bounceGift 1.2s infinite ease-in-out;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 40;
-            position: relative;
+            transition: all 0.3s;
         }
         @keyframes bounceGift {
             0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.1); filter: drop-shadow(0 15px 20px rgba(255, 101, 132, 0.4)); }
+            50% { transform: translateY(-10px) scale(1.08); filter: drop-shadow(0 15px 15px rgba(255, 101, 132, 0.3)); }
         }
 
-        /* Form Harapan di Akhir */
         #wish-form-container {
             display: none;
-            margin-top: 20px;
-            animation: fadeIn 1s ease;
-            text-align: center;
+            margin-top: 15px;
+            animation: tabFadeIn 0.6s ease;
         }
 
         .wish-textarea {
@@ -312,19 +354,16 @@
             height: 80px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 101, 132, 0.3);
-            border-radius: 15px;
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             color: white;
             font-family: inherit;
             resize: none;
             outline: none;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 0.9rem;
         }
-        .wish-textarea:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 10px rgba(255, 101, 132, 0.2);
-        }
+        .wish-textarea:focus { border-color: var(--accent-color); }
 
         .btn-send-wish {
             background: linear-gradient(45deg, #25d366, #128c7e);
@@ -334,92 +373,13 @@
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
-        .btn-send-wish:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
-        }
+        .btn-send-wish:hover { transform: translateY(-2px); }
 
-        .cat-art {
-            position: relative;
-            width: 140px;
-            height: 120px;
-            margin: 0 auto 25px auto;
-        }
-        .cat-head {
-            position: absolute;
-            bottom: 0;
-            left: 10px;
-            width: 120px;
-            height: 95px;
-            background: var(--cat-color);
-            border-radius: 50% 50% 45% 45%;
-            z-index: 2;
-        }
-        .ear {
-            position: absolute;
-            top: 15px;
-            width: 45px;
-            height: 50px;
-            background: var(--cat-color);
-            z-index: 1;
-        }
-        .ear.left { left: 8px; transform: rotate(-25deg); border-radius: 30% 70% 30% 40%; }
-        .ear.right { right: 8px; transform: rotate(25deg); border-radius: 70% 30% 40% 30%; }
-        .ear-inner { position: absolute; top: 8px; width: 24px; height: 32px; background: #ff8da1; }
-        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
-        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
-        .eye {
-            position: absolute;
-            top: 32px;
-            width: 20px;
-            height: 20px;
-            background: #fff;
-            border-radius: 50%;
-            animation: blink 4s infinite;
-        }
-        .eye.left { left: 25px; }
-        .eye.right { right: 25px; }
-        .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; background: #111; border-radius: 50%; }
-        .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
-        .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
-
-        .footer-note {
-            margin-top: 25px;
-            text-align: right;
-            font-style: italic;
-            color: #ffb367;
-            font-weight: bold;
-            font-size: 0.95rem;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-
-        .music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 100;
-            border: 1px solid rgba(255,255,255,0.25);
-            font-size: 1.2rem;
-            transition: all 0.3s;
-        }
-
-        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
+        /* Sistem Efek Terbang */
         .floating-item {
             position: absolute;
             bottom: -50px;
@@ -435,90 +395,209 @@
             90% { opacity: var(--opac); }
             100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
         }
+
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
-    
-    <!-- Bagian Audio: Tautan musik sudah bersih -->
-    <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
-
-    <canvas id="canvas-fireworks"></canvas>
-    <div class="floating-bg" id="bgSpace"></div>
-
-    <div class="card-container" id="main-card">
-        
-        <!-- HALAMAN 1 -->
-        <div id="page-utama">
-            <div class="cat-art">
-                <div class="ear left"><div class="ear-inner"></div></div>
-                <div class="ear right"><div class="ear-inner"></div></div>
-                <div class="cat-head">
-                    <div class="eye left"></div>
-                    <div class="eye right"></div>
-                    <div class="nose"></div>
-                    <div class="mouth"></div>
-                </div>
-            </div>
-
-            <h1>HBD Ayak! 🐾</h1>
-            <p class="message" id="question-text">Mau dapet ucapan ulang tahun spesial dari Kakak gak hari ini? 🥰</p>
-            
-            <div class="btn-wrapper">
-                <button class="btn-surprise" onclick="startSurpriseChain()">Mau Banget! 🥰</button>
-                <button id="btn-no" onmouseover="flyAway()" onclick="flyAway()">Enggak 😜</button>
+    <!-- SCREEN LOADING ALA HACKER -->
+    <div id="loading-screen">
+        <canvas id="matrix-canvas"></canvas>
+        <div class="loader-console">
+            <div class="console-log" id="consoleLog"></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">0%</div>
             </div>
         </div>
+    </div>
 
-        <!-- HALAMAN 2 -->
-        <div id="page-surat">
-            <h2>Pesan Buat Ayak ✨</h2>
+    <!-- INTERFACE UTAMA SETELAH LOGIN/LOADING -->
+    <div id="main-interface">
+        <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
+        <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
+
+        <canvas id="canvas-fireworks"></canvas>
+        <div class="floating-bg" id="bgSpace"></div>
+
+        <div class="card-container" id="main-card">
             
-            <div class="polaroid-gallery">
-                <div class="polaroid-viewport">
-                    <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
-                    <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
-                    <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
-                    <div class="polaroid-slide"><img src="ayak.1/ay4.jpeg" alt="Moment 4"></div>
-                    <div class="polaroid-slide"><img src="ayak.1/ay5.jpeg" alt="Moment 5"></div>
-                    <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
+            <!-- MENU NAVIGASI UTAMA -->
+            <div class="menu-navigation">
+                <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
+                <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
+                <button class="menu-tab" onclick="switchMenu('menu-letter', this)">✉️ Surat</button>
+                <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Surprise</button>
+            </div>
+
+            <!-- ISI MENU 1: UTAMA -->
+            <div id="menu-home" class="menu-content active">
+                <div class="cat-art">
+                    <div class="ear left"><div class="ear-inner"></div></div>
+                    <div class="ear right"><div class="ear-inner"></div></div>
+                    <div class="cat-head">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
                 </div>
+                <h1>HBD Ayak! 🐾</h1>
+                <p style="line-height: 1.6; color: #eee; margin-top: 15px;">
+                    Selamat datang di halaman rahasia yang dirancang khusus untuk hari ulang tahunmu! ✨<br><br>
+                    Silakan jelajahi menu-menu di atas untuk melihat kejutan yang sudah disiapkan ya, Ayak! 🥰
+                </p>
+            </div>
+
+            <!-- ISI MENU 2: GALERI FOTO -->
+            <div id="menu-gallery" class="menu-content">
+                <h2>Our Gallery ✨</h2>
+                <div class="polaroid-gallery">
+                    <div class="polaroid-viewport">
+                        <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay4.jpeg" alt="Moment 4"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay5.jpeg" alt="Moment 5"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
+                    </div>
+                    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
+                    <div class="gallery-caption">moments 🐾</div>
+                    <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
+                </div>
+                <p style="font-size: 0.85rem; color: #aaa;">Klik panah untuk melihat lembar memori lainnya.</p>
+            </div>
+
+            <!-- ISI MENU 3: SURAT -->
+            <div id="menu-letter" class="menu-content">
+                <h2>Pesan Dari Kakak ✉️</h2>
+                <div class="content-surat" id="surat-box">
+                    <!-- Teks surat otomatis diketik di sini saat menu dibuka -->
+                </div>
+                <div class="footer-note">— Dari Kakak 🎈</div>
+            </div>
+
+            <!-- ISI MENU 4: SURPRISE & HARAPAN -->
+            <div id="menu-gift" class="menu-content">
+                <h2>Buka Kado Kamu! 🎁</h2>
+                <p id="gift-instruction" style="color: #eee; font-size: 0.95rem; margin-bottom: 10px;">Ketuk kado misterius di bawah ini untuk mengaktifkan perayaan puncak!</p>
                 
-                <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
-                <div class="gallery-caption">our moments ✨</div>
-                <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
+                <div class="gift-box-final" id="final-gift" onclick="executeGrandFinale(event)">🎁</div>
+
+                <!-- Form Pengiriman Harapan Otomatis -->
+                <div id="wish-form-container">
+                    <p style="font-size: 0.9rem; color: #ffb367; margin-bottom: 8px; font-weight: bold;">Tulis harapan/doa kamu di sini: ✨</p>
+                    <textarea class="wish-textarea" id="user-wish" placeholder="Ketik apa saja harapan kamu di hari ulang tahun ini..."></textarea>
+                    <button class="btn-send-wish" onclick="sendWishToWhatsApp()">Kirim Harapan ke Kakak 🚀</button>
+                </div>
             </div>
 
-            <button class="love-interaction-btn" onclick="burstHearts(event)">❤️ Click Me!</button>
-
-            <div class="content-surat" id="typewriter-text"></div>
-            
-            <div class="gift-box-final" id="final-gift" onclick="executeGrandFinale(event)">🎁</div>
-
-            <!-- Form Pengiriman Harapan Otomatis -->
-            <div id="wish-form-container">
-                <p style="font-size: 0.9rem; color: #ffb367; margin-bottom: 8px; font-weight: bold;">Tulis harapan/doa kamu di sini: ✨</p>
-                <textarea class="wish-textarea" id="user-wish" placeholder="Ketik apa aja harapan kamu di hari ulang tahun ini..."></textarea>
-                <br>
-                <button class="btn-send-wish" onclick="sendWishToWhatsApp()">Kirim Harapan ke Kakak 🚀</button>
-            </div>
-
-            <div class="footer-note" id="footer-signature">
-                – Dari Kakak 🎈
-            </div>
         </div>
-
     </div>
 
     <script>
+        // --- ANIMASI MATRIX HACKER LOADING SCREEN ---
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const mCtx = matrixCanvas.getContext('2d');
+        
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const matrixChars = "0101011001010101010100101011011001";
+        const charArr = matrixChars.split("");
+        const fontSize = 14;
+        const columns = matrixCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            mCtx.fillStyle = '#00ff66';
+            mCtx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = charArr[Math.floor(Math.random() * charArr.length)];
+                mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if(drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        const matrixInterval = setInterval(drawMatrix, 30);
+
+        // --- SIMULASI LOG KONSOL HACKER ---
+        const consoleLog = document.getElementById('consoleLog');
+        const logs = [
+            "[INFO] Menginisialisasi Protokol Kejutan...",
+            "[SECURE] Menghubungkan jaringan data sentimental...",
+            "[SYSTEM] Memuat berkas memori kebahagiaan...",
+            "[DECRYPT] Membuka enkripsi folder 'Ayak.1'...",
+            "[SUCCESS] Berkas foto berhasil diekstrak.",
+            "[SYSTEM] Membuka bypass sistem pertahanan cuek...",
+            "[INFO] Menyiapkan modul kue virtual & kembang api...",
+            "[READY] Mempersiapkan otentikasi User: Ayak",
+            "[ACCESS] Akses Diterima! Mengalihkan ke Beranda..."
+        ];
+
+        let logIndex = 0;
+        function printLogs() {
+            if(logIndex < logs.length) {
+                consoleLog.innerHTML += logs[logIndex] + "<br>";
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+                logIndex++;
+                setTimeout(printLogs, Math.random() * 400 + 150);
+            }
+        }
+        printLogs();
+
+        // --- PROGRESS BAR LOADING ---
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        let progress = 0;
+
+        function updateLoading() {
+            if (progress < 100) {
+                progress += Math.floor(Math.random() * 4) + 1;
+                if(progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+                progressText.innerText = progress + '%';
+                setTimeout(updateLoading, 70);
+            } else {
+                setTimeout(() => {
+                    clearInterval(matrixInterval);
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('main-interface').style.display = 'flex';
+                    // Mulai putar musik otomatis setelah loading selesai
+                    toggleMusic();
+                }, 500);
+            }
+        }
+        updateLoading();
+
+
+        // --- SISTEM KONTROL UTAMA INTERFACE ---
         const card = document.getElementById('main-card');
         const bgSpace = document.getElementById('bgSpace');
-        const btnNo = document.getElementById('btn-no');
         const canvas = document.getElementById('canvas-fireworks');
         const ctx = canvas.getContext('2d');
         const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
-        
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -527,67 +606,59 @@
         resizeCanvas();
 
         document.addEventListener('mousemove', (e) => {
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        function flyAway() {
-            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 40) + 20;
-            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 40) + 20;
-            btnNo.style.position = 'fixed';
-            btnNo.style.left = x + 'px';
-            btnNo.style.top = y + 'px';
+        // --- PINDAH NAVIGASI MENU ---
+        let letterTyped = false;
+        function switchMenu(menuId, tabElement) {
+            document.querySelectorAll('.menu-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
             
-            const funnyTexts = [
-                "Eits, gak bisa diklik! 😜",
-                "Harus klik 'Mau Banget!' pokoknya! 🤣",
-                "Mau lari ke mana hayooo? 🏃‍♀️",
-                "Pilihan dilarang! Hahaha 🤭",
-                "Klik yang kiri aja udah! 🥰"
-            ];
-            document.getElementById('question-text').innerText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
-        }
+            document.getElementById(menuId).classList.add('active');
+            tabElement.classList.add('active');
 
-        function burstHearts(e, customEmoji) {
-            if(e) e.stopPropagation();
-            const emoji = customEmoji || '❤️';
-            for (let i = 0; i < 18; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'floating-item';
-                    heart.innerText = emoji;
-                    heart.style.left = (Math.random() * 80 + 10) + 'vw';
-                    heart.style.setProperty('--speed', (Math.random() * 2 + 1.5) + 's');
-                    heart.style.setProperty('--size', (Math.random() * 20 + 20) + 'px');
-                    heart.style.setProperty('--opac', Math.random() * 0.7 + 0.3);
-                    bgSpace.appendChild(heart);
-                    setTimeout(() => { heart.remove(); }, 3500);
-                }, i * 50);
+            // Trigger mesin ketik jika membuka menu surat pertama kali
+            if (menuId === 'menu-letter' && !letterTyped) {
+                letterTyped = true;
+                typeWriter(suratText, 0);
             }
         }
 
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.polaroid-slide');
-        function changeSlide(direction) {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + direction + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
+        // --- SISTEM ELEMEN TERBANG ---
+        function burstHearts(customEmoji) {
+            const emoji = customEmoji || '❤️';
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-item';
+                heart.innerText = emoji;
+                heart.style.left = (Math.random() * 80 + 10) + 'vw';
+                heart.style.setProperty('--speed', (Math.random() * 2 + 1.5) + 's');
+                heart.style.setProperty('--size', (Math.random() * 20 + 15) + 'px');
+                heart.style.setProperty('--opac', Math.random() * 0.6 + 0.3);
+                bgSpace.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 3500);
+            }
         }
 
         function spawnFloatingItem() {
-            const item = document.createElement('div');
-            item.className = 'floating-item';
-            item.innerText = items[Math.floor(Math.random() * items.length)];
-            item.style.left = Math.random() * 100 + 'vw';
-            item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
-            item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
-            item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
-            bgSpace.appendChild(item);
-            setTimeout(() => { item.remove(); }, 8000);
+            if(document.getElementById('main-interface').style.display === 'flex') {
+                const item = document.createElement('div');
+                item.className = 'floating-item';
+                item.innerText = items[Math.floor(Math.random() * items.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
+                item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
+                item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
+                bgSpace.appendChild(item);
+                setTimeout(() => { item.remove(); }, 8000);
+            }
         }
-        setInterval(spawnFloatingItem, 600);
+        setInterval(spawnFloatingItem, 700);
 
+        // --- AUDIO CONTROLLER ---
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -597,100 +668,46 @@
                 audio.pause();
                 musicBtn.innerText = '🔇';
             } else {
-                audio.play().catch((err) => { console.log("Audio blocked", err); });
+                audio.play().catch((err) => { console.log("Audio diblokir browser, butuh klik.", err); });
                 musicBtn.innerText = '🎵';
             }
             isPlaying = !isPlaying;
         }
 
-        const alerts = [
-            "Cieee yang terpaksa klik 'Mau Banget!'... 😜",
-            "Niatnya mau nolak tapi gagal kan? Hahaha! 🤣",
-            "Tapi serius... makasih ya udah meluangkan waktu buat buka ini. 🥰",
-            "Sekarang, atur posisi duduknya...",
-            "Tarik napas dalam-dalam... 🍃",
-            "Dan siap-siap baca ini ya, Ayak... ✨"
-        ];
-
-        function runAlertChain(index) {
-            if (index < alerts.length) {
-                burstHearts(null, '🐱'); 
-                setTimeout(() => {
-                    alert(alerts[index]);
-                    runAlertChain(index + 1);
-                }, 150);
-            } else {
-                showMainSurat();
-            }
+        // --- SLIDER FOTO DI MENU GALERI ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.polaroid-slide');
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
         }
 
-        function startSurpriseChain() {
-            if(!isPlaying) toggleMusic();
-            runAlertChain(0);
-        }
-
+        // --- SISTEM TEKS MESIN KETIK UNTUK SURAT ---
         const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉
 
 Sengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. 
 
-Mungkin selama ini kita sering bercanda, seru-seruan bareng, atau kadang Kakak jailin kamu sampai kesel. Tapi di hari ini, Kakak mau jujur dari hati yang paling dalam...
+Mungkin selama ini kita sering bercanda, seru-seruan bareng, atau kadang Kakak jailin kamu sampai kesel. Tapi di hari ini, Kakak mau jujur dari hati...
 
 Kakak bersyukur banget bisa kenal dan ada di dekat kamu sampai detik ini. Melihat kamu berjuang kuliah, melewati hari-hari sibukmu, itu bikin Kakak bangga banget sama kamu.
 
 Semoga di usia yang baru ini, segala lelahmu berubah jadi berkah. Kuliahmu dilancarkan, jalan masa depanmu dipermudah, selalu diberi kesehatan, dan dikelilingi orang-orang tulus yang menyayangimu.
 
-Kalau nanti ada hari-hari yang terasa berat atau melelahkan, inget ya... kamu nggak sendirian. Selalu ada Kakak di sini yang siap dengerin cerita kamu, atau sekadar jadi tempat kamu rehat.
-
-Jangan pernah lupa buat tersenyum hari ini, karena senyuman lebar kamu itu berharga banget. 
+Kalau nanti ada hari-hari yang terasa berat atau melelahkan, inget ya... kamu nggak sendirian. Selalu ada Kakak di sini yang siap dengerin cerita kamu.
 
 Sekali lagi, Happy Birthday, Ayak! 💖`;
 
-        function typeWriter(text, i, fnCallback) {
+        function typeWriter(text, i) {
             if (i < text.length) {
-                document.getElementById("typewriter-text").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
-                const scrollArea = document.getElementById("typewriter-text");
+                document.getElementById("surat-box").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+                const scrollArea = document.getElementById("surat-box");
                 scrollArea.scrollTop = scrollArea.scrollHeight;
-
-                setTimeout(function() {
-                    typeWriter(text, i + 1, fnCallback)
-                }, 45);
-            } else if (typeof fnCallback == 'function') {
-                setTimeout(fnCallback, 700);
+                setTimeout(function() { typeWriter(text, i + 1) }, 40);
             }
         }
 
-        function showMainSurat() {
-            btnNo.style.display = 'none';
-            burstHearts(null, '✨');
-            const pageUtama = document.getElementById('page-utama');
-            const pageSurat = document.getElementById('page-surat');
-
-            pageUtama.style.transition = "opacity 0.4s ease";
-            pageUtama.style.opacity = "0";
-            
-            setTimeout(() => {
-                pageUtama.style.display = "none";
-                pageSurat.style.display = "block";
-                
-                setTimeout(() => {
-                    pageSurat.style.transition = "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-                    pageSurat.style.opacity = "1";
-                    pageSurat.style.transform = "scale(1) translateZ(0)";
-                    
-                    setTimeout(() => {
-                        typeWriter(suratText, 0, function(){
-                            document.getElementById("footer-signature").style.opacity = "1";
-                            const finalGift = document.getElementById("final-gift");
-                            finalGift.style.opacity = "1";
-                            finalGift.style.transform = "scale(1)";
-                            burstHearts(null, '🎁');
-                        });
-                    }, 500);
-
-                }, 50);
-            }, 400);
-        }
-
+        // --- ANIMASI KEMBANG API & PENGIRIMAN PESAN ---
         let particles = [];
         function createFirework(x, y) {
             const colors = ['#ff6584', '#ffac67', '#f9a826', '#4ad3ff', '#b57cff'];
@@ -711,17 +728,13 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.04;
-                p.alpha -= 0.015;
-                
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.04; p.alpha -= 0.015;
                 ctx.globalAlpha = p.alpha;
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
-                
                 if (p.alpha <= 0) particles.splice(i, 1);
             }
             requestAnimationFrame(animateFireworks);
@@ -736,36 +749,30 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
 
         function executeGrandFinale(e) {
             if(e) e.stopPropagation();
-            
             document.getElementById("final-gift").style.display = 'none';
+            document.getElementById("gift-instruction").innerText = "Yeay! Kado berhasil dibuka! 🥳🎆";
             canvas.style.display = "block";
             animateFireworks();
             autoLaunchFireworks();
 
-            // Semburan partikel meriah
-            burstHearts(null, '🎉');
-            setTimeout(() => burstHearts(null, '🥳'), 400);
+            burstHearts('🎉');
+            setTimeout(() => burstHearts('🥳'), 400);
 
-            // Munculkan Kotak Pengisian Harapan setelah kado dibuka
             document.getElementById("wish-form-container").style.display = "block";
         }
 
-        // --- SISTEM PENGIRIMAN WA OTOMATIS ---
         function sendWishToWhatsApp() {
             const wishText = document.getElementById("user-wish").value.trim();
-            
             if (wishText === "") {
                 alert("Harapannya diisi dulu dong, jangan dikosongin yaa! 😋");
                 return;
             }
 
-            // ISI NOMOR WHATSAPP KAMU DI SINI (Ganti teks di bawah dengan nomor aslimu, awali dengan 62)
+            // MASUKKAN NOMOR WHATSAPP KAMU DI SINI (awali kode negara 62)
             const myPhoneNumber = "628xxxxxxxxxx"; 
             
             const fullMessage = `Halo Kak! Ini harapan dan doa aku di hari ulang tahunku:\n\n"${wishText}"`;
             const encodedMessage = encodeURIComponent(fullMessage);
-            
-            // Membuka tautan kirim pesan WhatsApp otomatis ke nomor kamu
             window.open(`https://api.whatsapp.com/send?phone=${myPhoneNumber}&text=${encodedMessage}`, '_blank');
         }
 
