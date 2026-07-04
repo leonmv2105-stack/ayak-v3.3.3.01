@@ -42,6 +42,17 @@
             overflow: hidden;
         }
 
+        #canvas-fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+            display: none;
+        }
+
         .card-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(30px);
@@ -271,6 +282,24 @@
             transform: scale(1.05);
         }
 
+        /* Tombol Kado Penutup Akhir */
+        .gift-box-final {
+            display: inline-block;
+            margin: 20px auto 10px auto;
+            font-size: 2.5rem;
+            cursor: pointer;
+            animation: bounceGift 1.2s infinite ease-in-out;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 40;
+            position: relative;
+        }
+        @keyframes bounceGift {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.1); filter: drop-shadow(0 15px 20px rgba(255, 101, 132, 0.4)); }
+        }
+
         .cat-art {
             position: relative;
             width: 140px;
@@ -368,8 +397,10 @@
 <body>
 
     <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
-    <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
+    <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.Part1.mp3"></audio> 
 
+    <!-- Canvas Khusus Kembang Api Tiruan -->
+    <canvas id="canvas-fireworks"></canvas>
     <div class="floating-bg" id="bgSpace"></div>
 
     <div class="card-container" id="main-card">
@@ -417,9 +448,11 @@
 
             <button class="love-interaction-btn" onclick="burstHearts(event)">❤️ Click Me!</button>
 
-            <!-- Text Area Kosong untuk Efek Mengetik Otomatis -->
             <div class="content-surat" id="typewriter-text"></div>
             
+            <!-- Tombol Kado Penutup Rahasia -->
+            <div class="gift-box-final" id="final-gift" onclick="executeGrandFinale(event)">🎁</div>
+
             <div class="footer-note" id="footer-signature">
                 – Dari Kakak 🎈
             </div>
@@ -431,16 +464,25 @@
         const card = document.getElementById('main-card');
         const bgSpace = document.getElementById('bgSpace');
         const btnNo = document.getElementById('btn-no');
+        const canvas = document.getElementById('canvas-fireworks');
+        const ctx = canvas.getContext('2d');
         const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
-        // Tilt Effect
+        // Atur ukuran canvas kembang api
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Tilt Card
         document.addEventListener('mousemove', (e) => {
             const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
             const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // Efek Tombol Kabur Jail
         function flyAway() {
             const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 40) + 20;
             const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 40) + 20;
@@ -458,7 +500,6 @@
             document.getElementById('question-text').innerText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
         }
 
-        // Semburan Hati / Emoji
         function burstHearts(e, customEmoji) {
             if(e) e.stopPropagation();
             const emoji = customEmoji || '❤️';
@@ -477,7 +518,6 @@
             }
         }
 
-        // Slideshow Galeri Foto
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
         function changeSlide(direction) {
@@ -486,7 +526,6 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // Partikel Latar Belakang
         function spawnFloatingItem() {
             const item = document.createElement('div');
             item.className = 'floating-item';
@@ -500,7 +539,6 @@
         }
         setInterval(spawnFloatingItem, 600);
 
-        // Kontrol Musik
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -516,7 +554,6 @@
             isPlaying = !isPlaying;
         }
 
-        // Pop-up Beruntun
         const alerts = [
             "Cieee yang terpaksa klik 'Mau Banget!'... 😜",
             "Niatnya mau nolak tapi gagal kan? Hahaha! 🤣",
@@ -543,7 +580,6 @@
             runAlertChain(0);
         }
 
-        // --- TEKS SURAT EMOSIONAL MENYENTUH HATI ---
         const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉
 
 Sengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. 
@@ -563,14 +599,12 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
         function typeWriter(text, i, fnCallback) {
             if (i < text.length) {
                 document.getElementById("typewriter-text").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
-                
-                // Efek auto-scroll ke bawah saat teks mengetik otomatis
                 const scrollArea = document.getElementById("typewriter-text");
                 scrollArea.scrollTop = scrollArea.scrollHeight;
 
                 setTimeout(function() {
                     typeWriter(text, i + 1, fnCallback)
-                }, 45); // Kecepatan ketik per karakter (milidetik)
+                }, 45);
             } else if (typeof fnCallback == 'function') {
                 setTimeout(fnCallback, 700);
             }
@@ -594,17 +628,90 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
                     pageSurat.style.opacity = "1";
                     pageSurat.style.transform = "scale(1) translateZ(0)";
                     
-                    // Memulai efek ketik otomatis surat emosional setelah halaman terbuka
                     setTimeout(() => {
                         typeWriter(suratText, 0, function(){
-                            // Munculkan tanda tangan setelah pengetikan selesai
                             document.getElementById("footer-signature").style.opacity = "1";
-                            burstHearts(null, '❤️');
+                            // SELESAI MENGETIK: Munculkan Tombol Kado Penutup
+                            const finalGift = document.getElementById("final-gift");
+                            finalGift.style.opacity = "1";
+                            finalGift.style.transform = "scale(1)";
+                            burstHearts(null, '🎁');
                         });
                     }, 500);
 
                 }, 50);
             }, 400);
+        }
+
+        // --- SISTEM GRAND FINALE KEMBANG API & LAGU BARU ---
+        let particles = [];
+        function createFirework(x, y) {
+            const colors = ['#ff6584', '#ffac67', '#f9a826', '#4ad3ff', '#b57cff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    alpha: 1,
+                    color: color,
+                    size: Math.random() * 3 + 1
+                });
+            }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.04; // Gravitasi kecil
+                p.alpha -= 0.015;
+                
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+
+        function autoLaunchFireworks() {
+            if(canvas.style.display === "block") {
+                createFirework(Math.random() * canvas.width, Math.random() * (canvas.height * 0.6));
+                setTimeout(autoLaunchFireworks, 400);
+            }
+        }
+
+        function executeGrandFinale(e) {
+            if(e) e.stopPropagation();
+            
+            // 1. Sembunyikan Kado yang udah diklik
+            document.getElementById("final-gift").style.display = 'none';
+            
+            // 2. Aktifkan Layar Kembang Api
+            canvas.style.display = "block";
+            animateFireworks();
+            autoLaunchFireworks();
+
+            // 3. Ganti Musik ke Lagu Ulang Tahun Ceria (Bebas Hak Cipta)
+            audio.src = "https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"; 
+            // Ganti link di atas dengan audio .mp3 "Happy Birthday instrument" milikmu jika ada!
+            audio.play();
+
+            // 4. Banjir Efek Melayang di Layar
+            burstHearts(null, '🎉');
+            setTimeout(() => burstHearts(null, '🥳'), 400);
+            setTimeout(() => burstHearts(null, '🎂'), 800);
+
+            // 5. Pesan Kejutan Final Pop-up Emosional Terakhir
+            setTimeout(() => {
+                alert("Selamat Ulang Tahun yang luar biasa, Ayak! Terima kasih sudah membaca sampai akhir. Semoga harimu penuh kebahagiaan! 🎂🥳🎈");
+            }, 1000);
         }
 
         document.addEventListener('contextmenu', event => event.preventDefault());
