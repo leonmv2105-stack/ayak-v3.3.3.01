@@ -200,6 +200,51 @@
             letter-spacing: 0.5px;
         }
 
+        /* Pembungkus Tombol Pilihan */
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 25px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn-surprise {
+            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
+            border: none;
+            padding: 12px 30px;
+            color: white;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 101, 132, 0.4);
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            outline: none;
+            z-index: 10;
+        }
+        .btn-surprise:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(255, 101, 132, 0.6);
+        }
+
+        /* Tombol Kabur Jail */
+        #btn-no {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #eee;
+            padding: 12px 30px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 5;
+        }
+
         .love-interaction-btn {
             position: relative;
             display: inline-flex;
@@ -266,24 +311,6 @@
         .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; background: #111; border-radius: 50%; }
         .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
         .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
-
-        .btn-surprise {
-            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
-            border: none;
-            padding: 15px 40px;
-            color: white;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(255, 101, 132, 0.4);
-            transition: all 0.3s;
-            font-size: 1rem;
-            outline: none;
-        }
-        .btn-surprise:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(255, 101, 132, 0.6);
-        }
 
         .footer-note {
             margin-top: 25px;
@@ -356,9 +383,12 @@
             </div>
 
             <h1>HBD Ayak! 🐾</h1>
-            <p class="message">Ada titipan kiriman halaman web kecil dari Kakak buat kamu hari ini. Coba dibuka dulu kejutannya di bawah. ✨</p>
+            <p class="message" id="question-text">Mau dapet ucapan ulang tahun spesial dari Kakak gak hari ini? 🥰</p>
             
-            <button class="btn-surprise" onclick="startSurpriseChain()">Buka Sini 🎁</button>
+            <div class="btn-wrapper">
+                <button class="btn-surprise" onclick="startSurpriseChain()">Mau Banget! 🥰</button>
+                <button id="btn-no" onmouseover="flyAway()" onclick="flyAway()">Enggak 😜</button>
+            </div>
         </div>
 
         <!-- HALAMAN 2 -->
@@ -401,6 +431,7 @@
     <script>
         const card = document.getElementById('main-card');
         const bgSpace = document.getElementById('bgSpace');
+        const btnNo = document.getElementById('btn-no');
         const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
         
         // Tilt Effect
@@ -410,12 +441,26 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        window.addEventListener('deviceorientation', (e) => {
-            if(!e.gamma || !e.beta) return;
-            const xAxis = e.gamma / 2; 
-            const yAxis = (e.beta - 60) / 2;
-            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
-        });
+        // Efek Tombol Kabur Hilang
+        function flyAway() {
+            // Menghitung posisi acak di dalam area halaman web
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 40) + 20;
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 40) + 20;
+            
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = x + 'px';
+            btnNo.style.top = y + 'px';
+            
+            // Mengubah teks teks pertanyaan biar tambah kocak pas tombolnya kabur
+            const funnyTexts = [
+                "Eits, gak bisa diklik! 😜",
+                "Harus klik 'Mau Banget!' pokoknya! 🤣",
+                "Mau lari ke mana hayooo? 🏃‍♀️",
+                "Pilihan dilarang! Hahaha 🤭",
+                "Klik yang kiri aja udah! 🥰"
+            ];
+            document.getElementById('question-text').innerText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
+        }
 
         // Semburan Hati / Emoji Kucing Berguling
         function burstHearts(e, customEmoji) {
@@ -478,9 +523,9 @@
             isPlaying = !isPlaying;
         }
 
-        // --- SISTEM POP-UP BERUNTUN BIAR TERSENYUM LEBAR ---
+        // Pop-up Beruntun
         const alerts = [
-            "Cieee ada yang nungguin ucapan yaaa? 😜",
+            "Cieee yang ngeklik 'Mau Banget!'... 😜",
             "Yakin nih mau buka isi pesannya sekarang? 🤔",
             "Bentar... kumpulin dulu senyumnya yang manis! 🥰",
             "Oke, hitungan ketiga ya...",
@@ -491,14 +536,12 @@
 
         function runAlertChain(index) {
             if (index < alerts.length) {
-                // Semburkan emoji kucing setiap pop-up muncul biar rame
                 burstHearts(null, '🐱'); 
                 setTimeout(() => {
                     alert(alerts[index]);
                     runAlertChain(index + 1);
                 }, 150);
             } else {
-                // Masuk ke halaman surat utama
                 showMainSurat();
             }
         }
@@ -509,6 +552,8 @@
         }
 
         function showMainSurat() {
+            // Kembalikan posisi tombol no jika diperlukan
+            btnNo.style.display = 'none';
             burstHearts(null, '✨');
             const pageUtama = document.getElementById('page-utama');
             const pageSurat = document.getElementById('page-surat');
