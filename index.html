@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Untukmu 💌</title>
+    <title>HBD! 🐾</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             --accent-color: #ff7597;
+            --cat-color: #f9a826;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
@@ -21,39 +24,68 @@
             background: var(--bg-gradient);
             color: #fff;
             min-height: 100vh;
+            overflow-x: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            perspective: 1000px;
         }
 
-        .letter-box {
-            background: rgba(255, 255, 255, 0.08);
+        /* --- LAYOUT UTAMA (Glassmorphism 3D) --- */
+        .card-container {
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 35px;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            animation: fadeIn 1.5s ease-in-out;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            transform-style: preserve-3d;
+            transform: rotateX(5deg) rotateY(-5deg);
+            transition: all 0.8s ease;
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+        }
+
+        /* Halaman Kedua (Surat) - Tersembunyi di Awal */
+        #page-surat {
+            display: none;
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            text-align: justify;
+        }
+
+        h1, h2 {
+            font-size: 2.3rem;
+            background: linear-gradient(45deg, #ff7597, #f9a826);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-align: center;
         }
 
         h2 {
             font-size: 1.8rem;
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            text-align: center;
             border-bottom: 2px dashed rgba(255, 117, 151, 0.3);
             padding-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        .content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #f0f0f0;
-            text-align: justify;
+        p.message, .content-surat {
+            font-size: 1rem;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        p.message {
+            margin-bottom: 30px;
+        }
+
+        .content-surat {
             white-space: pre-line; /* Menjaga ketikan enter tetap rapi */
         }
 
@@ -65,27 +97,245 @@
             font-weight: bold;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- PURE CSS ART: KUCING --- */
+        .cat-art {
+            position: relative;
+            width: 150px;
+            height: 130px;
+            margin: 0 auto 20px auto;
+        }
+
+        .cat-head {
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            width: 120px;
+            height: 100px;
+            background: var(--cat-color);
+            border-radius: 50% 50% 45% 45%;
+            z-index: 2;
+        }
+
+        .ear {
+            position: absolute;
+            top: 10px;
+            width: 45px;
+            height: 55px;
+            background: var(--cat-color);
+            z-index: 1;
+        }
+        .ear.left { left: 10px; transform: rotate(-20deg); border-radius: 30% 70% 30% 40%; }
+        .ear.right { right: 10px; transform: rotate(20deg); border-radius: 70% 30% 40% 30%; }
+
+        .ear-inner {
+            position: absolute;
+            top: 10px;
+            width: 24px;
+            height: 35px;
+            background: #ff8da1;
+        }
+        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
+        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
+
+        .eye {
+            position: absolute;
+            top: 35px;
+            width: 22px;
+            height: 22px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+        .eye.left { left: 25px; }
+        .eye.right { right: 25px; }
+        .eye::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 12px;
+            height: 12px;
+            background: #111;
+            border-radius: 50%;
+        }
+
+        .nose {
+            position: absolute;
+            top: 58px;
+            left: 55px;
+            width: 10px;
+            height: 8px;
+            background: #ff8da1;
+            border-radius: 50% 50% 60% 60%;
+        }
+
+        .mouth {
+            position: absolute;
+            top: 64px;
+            left: 50px;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #553c11;
+            border-radius: 0 0 10px 10px;
+        }
+
+        /* --- TOMBOL --- */
+        .btn-surprise {
+            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
+            border: none;
+            padding: 12px 28px;
+            color: white;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 117, 151, 0.4);
+            transition: all 0.3s;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .btn-surprise:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 117, 151, 0.6);
+        }
+
+        /* --- PARTIKEL --- */
+        .paw-particle {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(255, 117, 151, 0.7);
+            border-radius: 50%;
+            animation: floatUp 2s linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="letter-box">
-        <h2>Pesan Spesial Hari Ini ✨</h2>
-        <div class="content">
-            Hai! Selamat bertambah usia ya. 
+    <div class="card-container" id="main-card">
+        
+        <!-- HALAMAN 1: ANIMASI KUCING & TOMBOL (Awal) -->
+        <div id="page-utama">
+            <div class="cat-art">
+                <div class="ear left"><div class="ear-inner"></div></div>
+                <div class="ear right"><div class="ear-inner"></div></div>
+                <div class="cat-head">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="nose"></div>
+                    <div class="mouth"></div>
+                </div>
+            </div>
 
-            Di hari yang spesial ini, aku cuma mau bilang terima kasih sudah berjuang dan bertahan sejauh ini menjadi orang yang hebat. Semoga di umur yang baru, semua urusanmu dilancarkan, langkahmu dimudahkan, dan selalu dikelilingi oleh kebahagiaan serta hal-hal baik setiap harinya.
+            <h1>Selamat Ulang Tahun! 🐾</h1>
+            <p class="message">Semoga hari-harimu selalu dipenuhi kebahagiaan, rezeki yang lancar, dan dikelilingi oleh hal-hal lucu seperti kucing kesayanganmu! Tetap jadi orang yang luar biasa ya!</p>
+            
+            <button class="btn-surprise" onclick="triggerSurprise()">Klik Kejutan ✨</button>
+        </div>
 
-            Jangan pernah bosan jadi orang baik, dan jangan lupa untuk selalu tersenyum ya! 
+        <!-- HALAMAN 2: ISI SURAT RAHASIA (Muncul setelah diklik) -->
+        <div id="page-surat">
+            <h2>Pesan Spesial Hari Ini ✨</h2>
+            <div class="content-surat">
+                Hai! Selamat bertambah usia ya. 
+
+                Di hari yang spesial ini, aku cuma mau bilang terima kasih sudah berjuang dan bertahan sejauh ini menjadi orang yang hebat. Semoga di umur yang baru, semua urusanmu dilancarkan, langkahmu dimudahkan, dan selalu dikelilingi oleh kebahagiaan serta hal-hal baik setiap harinya.
+
+                Jangan pernah bosan jadi orang baik, dan jangan lupa untuk selalu tersenyum ya! 
+            </div>
+            <div class="footer-note">
+                – Dari yang selalu mendoakanmu 🐾
+            </div>
         </div>
-        <div class="footer-note">
-            – Dari yang selalu mendoakanmu 🐾
-        </div>
+
     </div>
 
+    <script>
+        // 1. Efek Partikel Mengikuti Gerakan Kursor & Sentuhan HP
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.85) createParticle(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (Math.random() > 0.85 && e.touches.length > 0) {
+                createParticle(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'paw-particle';
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            particle.style.left = (x + scrollLeft) + 'px';
+            particle.style.top = (y + scrollTop) + 'px';
+            
+            const size = Math.random() * 12 + 8;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            document.body.appendChild(particle);
+            setTimeout(() => { particle.remove(); }, 2000);
+        }
+
+        // 2. Fungsi Transisi Mulus Gabungan Halaman 1 ke Halaman 2
+        function triggerSurprise() {
+            // Ledakan partikel di tengah layar
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            for(let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const randomX = centerX + (Math.random() - 0.5) * 250;
+                    const randomY = centerY + (Math.random() - 0.5) * 250;
+                    createParticle(randomX, randomY);
+                }, i * 20);
+            }
+
+            // Memunculkan alert ucapan manis
+            setTimeout(() => {
+                alert("Meoww! 🐱 Ada salam hangat dari semua kucing di dunia!");
+                
+                // Mulai transisi menyembunyikan Halaman 1
+                const pageUtama = document.getElementById('page-utama');
+                const pageSurat = document.getElementById('page-surat');
+                const mainCard = document.getElementById('main-card');
+
+                pageUtama.style.transition = "opacity 0.5s ease";
+                pageUtama.style.opacity = "0";
+                
+                setTimeout(() => {
+                    pageUtama.style.display = "none"; // Sembunyikan permanen
+                    pageSurat.style.display = "block"; // Munculkan struktur surat
+                    
+                    // Efek animasi memuat surat dengan halus
+                    setTimeout(() => {
+                        mainCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1.05)";
+                        pageSurat.style.transition = "all 0.8s ease";
+                        pageSurat.style.opacity = "1";
+                        pageSurat.style.transform = "scale(1) translateY(0)";
+                    }, 50);
+                }, 500);
+
+            }, 200);
+        }
+
+        // 3. Proteksi Tambahan Anti-Kepo (Klik Kanan & F12)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>
