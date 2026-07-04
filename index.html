@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBD! 🐾</title>
+    <title>Special Day For Ayak 🐾</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            --bg-gradient: linear-gradient(135deg, #1f1c2c 0%, #928dab 100%);
             --accent-color: #ff7597;
             --cat-color: #f9a826;
+            --mint-color: #a8ffb2;
         }
 
         * {
@@ -31,199 +32,243 @@
             perspective: 1000px;
         }
 
-        /* --- LAYOUT UTAMA (Glassmorphism 3D) --- */
+        /* --- BACKGROUND FLOATING ELEMENTS --- */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* --- CONTAINER UTAMA --- */
         .card-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 40px 30px;
+            border-radius: 30px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 30px rgba(255,255,255,0.05);
             transform-style: preserve-3d;
-            transform: rotateX(5deg) rotateY(-5deg);
-            transition: all 0.8s ease;
-            max-width: 500px;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 480px;
             width: 90%;
             z-index: 10;
         }
 
-        /* Halaman Kedua (Surat) - Tersembunyi di Awal */
+        /* --- HALAMAN 1 --- */
+        #page-utama {
+            animation: fadeIn 1s ease;
+        }
+
+        /* --- HALAMAN 2 (SURAT RAHASIA) --- */
         #page-surat {
             display: none;
             opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            text-align: justify;
+            transform: scale(0.9) translateY(30px);
         }
 
         h1, h2 {
-            font-size: 2.3rem;
-            background: linear-gradient(45deg, #ff7597, #f9a826);
+            font-size: 2.4rem;
+            background: linear-gradient(45deg, #ff7597, #ffb367);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             font-weight: 800;
             letter-spacing: 1px;
-            text-align: center;
+            text-shadow: 0 0 20px rgba(255,117,151,0.2);
         }
 
         h2 {
-            font-size: 1.8rem;
-            border-bottom: 2px dashed rgba(255, 117, 151, 0.3);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            font-size: 1.9rem;
+            border-bottom: 2px dashed rgba(255, 117, 151, 0.4);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         p.message, .content-surat {
-            font-size: 1rem;
-            color: #e0e0e0;
-            line-height: 1.7;
+            font-size: 1.05rem;
+            color: #f3f3f3;
+            line-height: 1.8;
         }
 
         p.message {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .content-surat {
-            white-space: pre-line; /* Menjaga ketikan enter tetap rapi */
+            text-align: justify;
+            white-space: pre-line;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
 
-        .footer-note {
-            margin-top: 30px;
-            text-align: right;
-            font-style: italic;
-            color: #f9a826;
-            font-weight: bold;
+        /* Custom Scrollbar untuk Surat */
+        .content-surat::-webkit-scrollbar {
+            width: 4px;
+        }
+        .content-surat::-webkit-scrollbar-thumb {
+            background: rgba(255, 117, 151, 0.5);
+            border-radius: 10px;
         }
 
-        /* --- PURE CSS ART: KUCING --- */
+        /* --- ESTETIK INSTAX PHOTO HOLDER --- */
+        .polaroid-frame {
+            background: white;
+            padding: 12px 12px 25px 12px;
+            border-radius: 4px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transform: rotate(-3deg);
+            width: 160px;
+            margin: 0 auto 25px auto;
+            transition: transform 0.5s;
+        }
+        .polaroid-frame:hover {
+            transform: rotate(3deg) scale(1.05);
+        }
+        .polaroid-photo {
+            width: 100%;
+            height: 140px;
+            background: #ffe3e9;
+            border-radius: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            overflow: hidden;
+        }
+
+        /* --- PURE CSS ART: KUCING GEMAS --- */
         .cat-art {
             position: relative;
-            width: 150px;
-            height: 130px;
-            margin: 0 auto 20px auto;
+            width: 140px;
+            height: 120px;
+            margin: 0 auto 25px auto;
         }
-
         .cat-head {
             position: absolute;
             bottom: 0;
-            left: 15px;
+            left: 10px;
             width: 120px;
-            height: 100px;
+            height: 95px;
             background: var(--cat-color);
             border-radius: 50% 50% 45% 45%;
             z-index: 2;
         }
-
         .ear {
             position: absolute;
-            top: 10px;
+            top: 15px;
             width: 45px;
-            height: 55px;
+            height: 50px;
             background: var(--cat-color);
             z-index: 1;
         }
-        .ear.left { left: 10px; transform: rotate(-20deg); border-radius: 30% 70% 30% 40%; }
-        .ear.right { right: 10px; transform: rotate(20deg); border-radius: 70% 30% 40% 30%; }
-
-        .ear-inner {
-            position: absolute;
-            top: 10px;
-            width: 24px;
-            height: 35px;
-            background: #ff8da1;
-        }
+        .ear.left { left: 8px; transform: rotate(-25deg); border-radius: 30% 70% 30% 40%; }
+        .ear.right { right: 8px; transform: rotate(25deg); border-radius: 70% 30% 40% 30%; }
+        .ear-inner { position: absolute; top: 8px; width: 24px; height: 32px; background: #ff8da1; }
         .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
         .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
-
         .eye {
             position: absolute;
-            top: 35px;
-            width: 22px;
-            height: 22px;
+            top: 32px;
+            width: 20px;
+            height: 20px;
             background: #fff;
             border-radius: 50%;
             animation: blink 4s infinite;
         }
         .eye.left { left: 25px; }
         .eye.right { right: 25px; }
-        .eye::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 12px;
-            height: 12px;
-            background: #111;
-            border-radius: 50%;
-        }
+        .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; background: #111; border-radius: 50%; }
+        .nose { position: absolute; top: 52px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
+        .mouth { position: absolute; top: 58px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
 
-        .nose {
-            position: absolute;
-            top: 58px;
-            left: 55px;
-            width: 10px;
-            height: 8px;
-            background: #ff8da1;
-            border-radius: 50% 50% 60% 60%;
-        }
-
-        .mouth {
-            position: absolute;
-            top: 64px;
-            left: 50px;
-            width: 20px;
-            height: 10px;
-            border-bottom: 3px solid #553c11;
-            border-radius: 0 0 10px 10px;
-        }
-
-        /* --- TOMBOL --- */
+        /* --- TOMBOL INTERAKTIF --- */
         .btn-surprise {
             background: linear-gradient(45deg, var(--accent-color), #ff4b72);
             border: none;
-            padding: 12px 28px;
+            padding: 14px 35px;
             color: white;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(255, 117, 151, 0.4);
-            transition: all 0.3s;
-            font-size: 1rem;
+            box-shadow: 0 10px 25px rgba(255, 117, 151, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 1.05rem;
             outline: none;
         }
-
         .btn-surprise:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(255, 117, 151, 0.6);
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(255, 117, 151, 0.6);
         }
 
-        /* --- PARTIKEL --- */
-        .paw-particle {
-            position: absolute;
-            pointer-events: none;
-            background: rgba(255, 117, 151, 0.7);
+        .footer-note {
+            margin-top: 35px;
+            text-align: right;
+            font-style: italic;
+            color: #ffb367;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        /* --- AUDIO PLAYER BUTTON (MINIMALIS) --- */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            animation: floatUp 2s linear forwards;
-            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 1.2rem;
+            transition: all 0.3s;
         }
 
-        @keyframes blink {
-            0%, 90%, 100% { transform: scaleY(1); }
-            95% { transform: scaleY(0.1); }
+        /* --- ANIMASI --- */
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .floating-item {
+            position: absolute;
+            bottom: -50px;
+            pointer-events: none;
+            animation: floatUpward var(--speed) linear forwards;
+            opacity: 0.6;
+            font-size: var(--size);
         }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+        @keyframes floatUpward {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: var(--opac); }
+            90% { opacity: var(--opac); }
+            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Musik Latar Otomatis/Manual Bawaan Luar -->
+    <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
+    <audio id="bgMusic" loop src="https://assets.mixkit.co/active_storage/sfx/123/123-100.wav"></audio> 
+    <!-- Catatan: Kamu bisa mengganti URL src audio di atas dengan link lagu .mp3 kesukaan Ayak jika punya tautan langsungnya -->
+
+    <div class="floating-bg" id="bgSpace"></div>
+
     <div class="card-container" id="main-card">
         
-        <!-- HALAMAN 1: ANIMASI KUCING & TOMBOL (Awal) -->
+        <!-- HALAMAN 1: INTERAKSI KUCING & INTRO -->
         <div id="page-utama">
             <div class="cat-art">
                 <div class="ear left"><div class="ear-inner"></div></div>
@@ -236,100 +281,115 @@
                 </div>
             </div>
 
-            <h1>Selamat Ulang Tahun! 🐾</h1>
-            <p class="message">Semoga hari-harimu selalu dipenuhi kebahagiaan, rezeki yang lancar, dan dikelilingi oleh hal-hal lucu seperti kucing kesayanganmu! Tetap jadi orang yang luar biasa ya!</p>
+            <h1>Happy Birthday, Ayak! 🐾</h1>
+            <p class="message">Ada satu boks paket kejutan digital misterius yang mendarat khusus buat kamu hari ini. Coba ketuk tombol di bawah buat unboxing opensourcenya! ✨</p>
             
-            <button class="btn-surprise" onclick="triggerSurprise()">Klik Kejutan ✨</button>
+            <button class="btn-surprise" onclick="triggerSurprise()">Buka Kejutannya 🎁</button>
         </div>
 
-        <!-- HALAMAN 2: ISI SURAT RAHASIA (Muncul setelah diklik) -->
+        <!-- HALAMAN 2: SURAT & GALERI FOTO MINI (Lebih Dalam & Manis) -->
         <div id="page-surat">
-            <h2>Pesan Spesial Hari Ini ✨</h2>
+            <h2>Special Message For Ayak ✨</h2>
+            
+            <!-- Foto Bingkai Polaroid Instax -->
+            <div class="polaroid-frame">
+                <!-- Kamu bisa mengganti teks emoji 🐱 di bawah ini dengan tag gambar asli kamu: <img src="foto-ayak.jpg" style="width:100%; height:100%; object-fit:cover;"> -->
+                <div class="polaroid-photo">🐱✨</div>
+            </div>
+
             <div class="content-surat">
-                Hai! Selamat bertambah usia ya. 
+                Hai Ayak! Selamat bertambah usia yaaa 🥳🎉
 
-                Di hari yang spesial ini, aku cuma mau bilang terima kasih sudah berjuang dan bertahan sejauh ini menjadi orang yang hebat. Semoga di umur yang baru, semua urusanmu dilancarkan, langkahmu dimudahkan, dan selalu dikelilingi oleh kebahagiaan serta hal-hal baik setiap harinya.
+                Di hari yang luar biasa ini, aku sengaja rakit halaman web ini khusus cuma buat kamu. Aku pengen mastiin kalau hari ini ada satu senyuman kecil yang terukir di wajah kamu pas ngebaca ini.
 
-                Jangan pernah bosan jadi orang baik, dan jangan lupa untuk selalu tersenyum ya! 
+                Terima kasih ya sudah bertahan, berjuang, dan selalu jadi orang yang luar biasa hebat sampai detik ini. Semoga di babak usia yang baru ini, segala langkahmu selalu dimudahkan, harimu dipenuhi canda tawa, urusanmu dilancarkan, dan pastinya didekatkan dengan hal-hal baik (plus kucing-kucing lucu di sekitarmu!).
+
+                Kalau dunia lagi terasa melelahkan, inget ya kalau kamu berharga banget. Jangan lupa buat selalu tersenyum dan bahagia hari ini, besok, dan seterusnya! Meeeoww~ 🐾
             </div>
             <div class="footer-note">
-                – Dari yang selalu mendoakanmu 🐾
+                – Dibuat sepenuh hati buat Ayak 🎈
             </div>
         </div>
 
     </div>
 
     <script>
-        // 1. Efek Partikel Mengikuti Gerakan Kursor & Sentuhan HP
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.85) createParticle(e.clientX, e.clientY);
-        });
+        // 1. Pembuat Elemen Terbang Otomatis (Hearts, Stars, Paws)
+        const bgSpace = document.getElementById('bgSpace');
+        const items = ['💖', '✨', '🐾', '🎈', '🐱', '🌸'];
+        
+        function spawnFloatingItem() {
+            const item = document.createElement('div');
+            item.className = 'floating-item';
+            item.innerText = items[Math.floor(Math.random() * items.length)];
+            
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
+            item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
+            item.style.setProperty('--opac', Math.random() * 0.5 + 0.3);
+            
+            bgSpace.appendChild(item);
+            setTimeout(() => { item.remove(); }, 8000);
+        }
+        
+        // Jalankan background mengalir secara konstan
+        setInterval(spawnFloatingItem, 400);
 
-        document.addEventListener('touchmove', (e) => {
-            if (Math.random() > 0.85 && e.touches.length > 0) {
-                createParticle(e.touches[0].clientX, e.touches[0].clientY);
+        // 2. Musik Kontrol
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.innerText = '🔇';
+            } else {
+                audio.play().catch(() => {});
+                musicBtn.innerText = '🎵';
             }
-        });
-
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'paw-particle';
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            particle.style.left = (x + scrollLeft) + 'px';
-            particle.style.top = (y + scrollTop) + 'px';
-            
-            const size = Math.random() * 12 + 8;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            
-            document.body.appendChild(particle);
-            setTimeout(() => { particle.remove(); }, 2000);
+            isPlaying = !isPlaying;
         }
 
-        // 2. Fungsi Transisi Mulus Gabungan Halaman 1 ke Halaman 2
+        // 3. Efek Transisi Meledak & Pengungkapan Surat
         function triggerSurprise() {
-            // Ledakan partikel di tengah layar
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            for(let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const randomX = centerX + (Math.random() - 0.5) * 250;
-                    const randomY = centerY + (Math.random() - 0.5) * 250;
-                    createParticle(randomX, randomY);
-                }, i * 20);
+            // Putar musik otomatis saat tombol diklik ( bypass aturan browser )
+            if(!isPlaying) toggleMusic();
+
+            // Efek hujan balon/hati instan saat tombol ditekan
+            for(let i = 0; i < 25; i++) {
+                setTimeout(spawnFloatingItem, i * 30);
             }
 
-            // Memunculkan alert ucapan manis
+            // Memunculkan pesan pop-up interaktif manis sebelum masuk surat
             setTimeout(() => {
-                alert("Meoww! 🐱 Ada salam hangat dari semua kucing di dunia!");
+                alert("Meoww! 🐱 Kotak kejutannya berhasil dibuka! Ada pesan rahasia di dalam yang nungguin Ayak...");
                 
-                // Mulai transisi menyembunyikan Halaman 1
                 const pageUtama = document.getElementById('page-utama');
                 const pageSurat = document.getElementById('page-surat');
                 const mainCard = document.getElementById('main-card');
 
-                pageUtama.style.transition = "opacity 0.5s ease";
+                // Efek fade-out halaman pertama
+                pageUtama.style.transition = "opacity 0.4s ease";
                 pageUtama.style.opacity = "0";
                 
                 setTimeout(() => {
-                    pageUtama.style.display = "none"; // Sembunyikan permanen
-                    pageSurat.style.display = "block"; // Munculkan struktur surat
+                    pageUtama.style.display = "none";
+                    pageSurat.style.display = "block";
                     
-                    // Efek animasi memuat surat dengan halus
+                    // Efek Pop-In halaman surat baru yang dinamis
                     setTimeout(() => {
-                        mainCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1.05)";
-                        pageSurat.style.transition = "all 0.8s ease";
+                        mainCard.style.transform = "rotateX(0deg) rotateY(0deg) scale(1.03)";
+                        pageSurat.style.transition = "all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
                         pageSurat.style.opacity = "1";
                         pageSurat.style.transform = "scale(1) translateY(0)";
                     }, 50);
-                }, 500);
+                }, 400);
 
-            }, 200);
+            }, 100);
         }
 
-        // 3. Proteksi Tambahan Anti-Kepo (Klik Kanan & F12)
+        // 4. Fitur Keamanan Anti-Kepo (Klik kanan & F12)
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) || (e.ctrlKey && e.key === 'U')) {
