@@ -3,229 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HBD Ayak! 🐾</title>
+    <title>Spesial Buat Ayak 💖</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0d0a14 0%, #1b1124 50%, #2b1428 100%);
+            --bg-color: #0f0c1b;
+            --card-bg: rgba(22, 17, 41, 0.75);
             --accent-color: #ff6584;
-            --cat-color: #f9a826;
-            --hacker-green: #00ff66;
-            --error-red: #ff3333;
+            --text-color: #ffffff;
+            --text-secondary: #b3b3cc;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #050508;
-            color: #fff;
+            background: linear-gradient(135deg, #0f0c20, #1b102f, #0a0616);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color);
             min-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1200px;
-        }
-
-        /* --- SCREEN LOADING HACKER --- */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            z-index: 9999;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            font-family: 'Courier New', Courier, monospace;
+            justify-content: center;
+            overflow-x: hidden;
             padding: 20px;
         }
 
-        #matrix-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Container Utama */
+        .main-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 101, 132, 0.2);
+            border-radius: 24px;
+            padding: 30px;
             width: 100%;
-            height: 100%;
-            opacity: 0.15;
-            pointer-events: none;
-        }
-
-        .loader-console {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            background: rgba(10, 10, 15, 0.95);
-            border: 1px solid var(--hacker-green);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
-            z-index: 2;
-        }
-
-        .console-log {
-            height: 140px;
-            overflow-y: hidden;
-            font-size: 0.85rem;
-            color: var(--hacker-green);
-            line-height: 1.5;
-            margin-bottom: 20px;
-            text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
-        }
-
-        .progress-container {
-            width: 100%;
-            background: #111;
-            border: 1px solid rgba(255,255,255,0.2);
-            height: 25px;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #00aa44, var(--hacker-green));
-            box-shadow: 0 0 10px var(--hacker-green);
-        }
-
-        .progress-text {
-            position: absolute;
-            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(255,101,132,0.15);
             text-align: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: #fff;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        .btn-start-system {
-            display: none;
-            width: 100%;
-            background: var(--hacker-green);
-            color: #000;
-            border: none;
-            padding: 10px;
-            font-family: monospace;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 4px;
-            box-shadow: 0 0 15px var(--hacker-green);
-            animation: pulseGlow 1.5s infinite;
-        }
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(0.98); opacity: 0.8; }
-        }
-
-        /* --- INTERFACE UTAMA --- */
-        #main-interface {
-            display: none;
-            opacity: 0;
-            width: 100%;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-            background: var(--bg-gradient);
-            position: fixed;
-            top: 0;
-            left: 0;
-            overflow-y: auto;
-            padding: 20px 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .floating-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        #canvas-fireworks {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 15;
-            pointer-events: none;
-            display: none;
-        }
-
-        .card-container {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 30px 15px;
-            border-radius: 30px;
-            text-align: center;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 40px rgba(255, 101, 132, 0.05);
-            transform-style: preserve-3d;
-            transition: transform 0.2s ease-out;
-            max-width: 460px;
-            width: 95%;
             z-index: 10;
-            margin: auto;
             position: relative;
         }
 
-        /* --- SISTEM MENU TAB --- */
-        .menu-navigation {
+        /* Navigasi Tab Menu */
+        .tabs-nav {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 4px;
+            padding: 6px;
+            border-radius: 16px;
             margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            flex-wrap: wrap;
-            gap: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .menu-tab {
-            padding: 8px 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: rgba(255, 255, 255, 0.6);
-            background: transparent;
+        .tab-btn {
+            background: none;
             border: none;
-            border-radius: 10px;
+            color: var(--text-secondary);
+            padding: 10px 14px;
+            font-size: 0.9rem;
             cursor: pointer;
-            transition: all 0.3s;
+            border-radius: 12px;
+            transition: all 0.3s ease;
             flex: 1;
-            min-width: 75px;
+            font-weight: 600;
         }
 
-        .menu-tab.active {
-            color: #fff;
-            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
-            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 101, 132, 0.4);
         }
 
+        /* Konten Tab */
         .menu-content {
             display: none;
-            animation: tabFadeIn 0.4s ease forwards;
+            animation: tabFadeIn 0.5s ease forwards;
         }
 
         .menu-content.active {
@@ -233,565 +97,204 @@
         }
 
         @keyframes tabFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1, h2 {
-            font-size: 1.8rem;
-            background: linear-gradient(45deg, #ff6584, #ffac67);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-            font-weight: 800;
+        h2 {
+            color: var(--accent-color);
+            margin-bottom: 12px;
+            font-size: 1.5rem;
         }
 
-        /* Menu 1: Beranda */
-        .cat-art {
-            position: relative;
-            width: 130px;
-            height: 110px;
-            margin: 0 auto 20px auto;
-        }
-        .cat-head {
-            position: absolute;
-            bottom: 0;
-            left: 5px;
-            width: 120px;
-            height: 90px;
-            background: var(--cat-color);
-            border-radius: 50% 50% 45% 45%;
-            z-index: 2;
-        }
-        .ear { position: absolute; top: 10px; width: 45px; height: 50px; background: var(--cat-color); z-index: 1; }
-        .ear.left { left: 5px; transform: rotate(-25deg); border-radius: 30% 70% 30% 40%; }
-        .ear.right { right: 5px; transform: rotate(25deg); border-radius: 70% 30% 40% 30%; }
-        .ear-inner { position: absolute; top: 8px; width: 24px; height: 32px; background: #ff8da1; }
-        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
-        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
-        .eye { position: absolute; top: 30px; width: 18px; height: 18px; background: #fff; border-radius: 50%; animation: blink 4s infinite; }
-        .eye.left { left: 25px; } .eye.right { right: 25px; }
-        .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 9px; height: 9px; background: #111; border-radius: 50%; }
-        .nose { position: absolute; top: 50px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
-        .mouth { position: absolute; top: 56px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
-
-        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
-
-        /* Menu 2: Galeri */
-        .polaroid-gallery {
-            position: relative;
-            background: #ffffff;
-            padding: 12px 12px 42px 12px;
-            border-radius: 2px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            transform: rotate(-2deg);
-            width: 210px;
-            margin: 10px auto 20px auto;
-        }
-
-        .polaroid-viewport {
-            position: relative;
-            width: 100%;
-            height: 190px;
-            background: #222;
-            overflow: hidden;
-        }
-
-        .polaroid-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
-        }
-
-        .polaroid-slide.active { opacity: 1; z-index: 2; }
-        .polaroid-slide img { width: 100%; height: 100%; object-fit: cover; }
-
-        .nav-btn {
-            position: absolute;
-            bottom: 8px;
-            background: rgba(0, 0, 0, 0.08);
-            color: #333;
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 20;
-            font-size: 0.8rem;
-        }
-        .prev-btn { left: 15px; } .next-btn { right: 15px; }
-        .gallery-caption { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #333; font-weight: bold; }
-
-        /* Menu 3: Surat */
-        .content-surat {
-            text-align: justify;
-            white-space: pre-line;
-            max-height: 230px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.25);
-            padding: 15px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.92rem;
+        p.desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             line-height: 1.6;
+            margin-bottom: 20px;
         }
-        .content-surat::-webkit-scrollbar { width: 4px; }
-        .content-surat::-webkit-scrollbar-thumb { background: rgba(255, 101, 132, 0.4); border-radius: 10px; }
 
-        .footer-note {
+        /* Elemen Interaktif */
+        .interactive-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 20px;
             margin-top: 15px;
-            text-align: right;
-            font-style: italic;
-            color: #ffb367;
-            font-weight: bold;
-            font-size: 0.9rem;
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
 
-        /* Menu Pilihan Pacaran */
+        /* Tombol Jebakan Khusus */
         .jebakan-box {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-            margin-top: 20px;
-            min-height: 180px;
             position: relative;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 25px 15px;
+            margin-top: 10px;
+            overflow: visible;
         }
 
         .btn-jebakan {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-            width: 85%;
-            max-width: 300px;
-        }
-        .btn-jebakan:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        /* Modul Pesan Rahasia "Maaf ya" */
-        #secret-message-target {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255, 101, 132, 0.1);
-            border: 1px dashed var(--accent-color);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            animation: tabFadeIn 0.5s ease forwards;
-        }
-
-        .gift-box-final {
-            display: inline-block;
-            margin: 15px auto;
-            font-size: 2.8rem;
-            cursor: pointer;
-            animation: bounceGift 1.2s infinite ease-in-out;
-            transition: all 0.3s;
-        }
-        @keyframes bounceGift {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.08); filter: drop-shadow(0 15px 15px rgba(255, 101, 132, 0.3)); }
-        }
-
-        #wish-form-container {
-            display: none;
-            margin-top: 15px;
-            animation: tabFadeIn 0.5s ease;
-        }
-
-        .wish-textarea {
-            width: 100%;
-            height: 80px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 101, 132, 0.3);
-            border-radius: 12px;
-            padding: 10px;
-            color: white;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .btn-send-wish {
-            background: linear-gradient(45deg, #25d366, #128c7e);
             border: none;
-            padding: 10px 25px;
             color: white;
+            padding: 12px 24px;
+            font-size: 1rem;
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            font-size: 0.88rem;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .floating-item {
+        .btn-jebakan:active {
+            transform: scale(0.95);
+        }
+
+        /* Efek Floating Hearts */
+        .heart-particle {
             position: absolute;
-            bottom: -50px;
+            font-size: 20px;
             pointer-events: none;
-            animation: floatUpward var(--speed) linear forwards;
-            opacity: 0.6;
-            font-size: var(--size);
-            z-index: 2;
-        }
-        @keyframes floatUpward {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: var(--opac); }
-            90% { opacity: var(--opac); }
-            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+            animation: floatUp 3s linear forwards;
+            z-index: 100;
         }
 
-        .music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(10px);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 100;
-            border: 1px solid rgba(255,255,255,0.2);
-            font-size: 1.1rem;
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-200px) scale(0.5) rotate(45deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <canvas id="matrix-canvas"></canvas>
-        <div class="loader-console">
-            <div class="console-log" id="consoleLog"></div>
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar"></div>
-                <div class="progress-text" id="progressText">0%</div>
+    <div class="main-container">
+        <!-- Navigasi Utama Tab Menu -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab(0)">Utama</button>
+            <button class="tab-btn" onclick="switchTab(1)">Cerita</button>
+            <button class="tab-btn" onclick="switchTab(2)">Pesan</button>
+            <button class="tab-btn" onclick="switchTab(3)">Rahasia</button>
+        </nav>
+
+        <!-- MENU 1: HALAMAN UTAMA -->
+        <div id="menu-utama" class="menu-content active">
+            <h2>Halo, Ayak! 👋 ✨</h2>
+            <p class="desc">Selamat datang di tempat kecil yang sengaja dibuat khusus untuk kamu. Jangan lupa buat cek semua tab di atas satu per satu ya!</p>
+            <div class="interactive-box">
+                <span style="font-size: 3rem;">🌸</span>
+                <p style="margin-top: 10px; font-weight: 500;">Click around and have fun!</p>
             </div>
-            <button class="btn-start-system" id="startBtn" onclick="enterMainSystem()">LANJUTKAN ➔</button>
         </div>
-    </div>
 
-    <div id="main-interface">
-        <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
-        <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
+        <!-- MENU 2: CERITA -->
+        <div id="menu-cerita" class="menu-content">
+            <h2>Sekilas Cerita 📖</h2>
+            <p class="desc">Dari sekian banyak obrolan singkat sampai hal-hal seru yang sering kita bahas, halaman ini sengaja dibikin buat pengingat kalau kehadiran kamu itu berkesan banget.</p>
+            <div class="interactive-box" style="text-align: left; font-size: 0.9rem; border-left: 3px solid var(--accent-color);">
+                "Kadang hal-hal yang paling sederhana sekalipun bakal terasa jauh lebih seru kalau dilewati atau diceritakan ke orang yang tepat."
+            </div>
+        </div>
 
-        <canvas id="canvas-fireworks"></canvas>
-        <div class="floating-bg" id="bgSpace"></div>
+        <!-- MENU 3: PESAN -->
+        <div id="menu-pesan" class="menu-content">
+            <h2>Pesan Buat Kamu ✉️</h2>
+            <p class="desc">Semangat terus ya buat segala aktivitas, kuliah, dan rutinitas harimu. Jangan lupa buat selalu jaga kesehatan dan jangan terlalu memforsir diri!</p>
+            <div class="interactive-box" style="background: rgba(255, 101, 132, 0.05);">
+                <p style="color: var(--accent-color); font-weight: bold; font-size: 1.1rem;">Keep Shining! ⭐</p>
+            </div>
+        </div>
 
-        <div class="card-container" id="main-card">
+        <!-- MENU 4: RAHASIA (Sistem Tombol Jebakan Interaktif) -->
+        <div id="menu-trap" class="menu-content">
+            <h2>Pertanyaan Spesial 🔒</h2>
+            <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab jujur ya, Ayak.</p>
             
-            <div class="menu-navigation" id="nav-bar">
-                <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
-                <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
-                <button class="menu-tab" onclick="switchMenu('menu-letter', this)">✉️ Surat</button>
-                <button class="menu-tab" onclick="switchMenu('menu-trap', this)">🔒 Rahasia</button>
-                <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Kado</button>
-            </div>
-
-            <div id="menu-home" class="menu-content active">
-                <div class="cat-art">
-                    <div class="ear left"><div class="ear-inner"></div></div>
-                    <div class="ear right"><div class="ear-inner"></div></div>
-                    <div class="cat-head">
-                        <div class="eye left"></div>
-                        <div class="eye right"></div>
-                        <div class="nose"></div>
-                        <div class="mouth"></div>
-                    </div>
-                </div>
-                <h1>Selamat Ulang Tahun, Ayak! 🥳✨</h1>
-                <p style="line-height: 1.6; color: #eee; margin-top: 15px;">
-                    Selamat datang di halaman rahasia yang dirancang khusus untuk hari ulang tahunmu! Semoga panjang umur, sehat selalu, dilancarkan kuliahnya, dan bahagia selalu ya. ✨<br><br>
-                    Silakan jelajahi menu-menu di atas untuk melihat kejutan lembar memori lainnya! 🥰
-                </p>
-            </div>
-
-            <div id="menu-gallery" class="menu-content">
-                <h2>Our Gallery ✨</h2>
-                <div class="polaroid-gallery">
-                    <div class="polaroid-viewport">
-                        <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
-                        <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
-                        <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
-                        <div class="polaroid-slide"><img src="ayak.1/ay4.jpeg" alt="Moment 4"></div>
-                        <div class="polaroid-slide"><img src="ayak.1/ay5.jpeg" alt="Moment 5"></div>
-                        <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
-                    </div>
-                    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
-                    <div class="gallery-caption">moments 🐾</div>
-                    <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
-                </div>
-            </div>
-
-            <div id="menu-letter" class="menu-content">
-                <h2>Pesan Tulus ✉️</h2>
-                <div class="content-surat" id="surat-box"></div>
-                <div class="footer-note" id="letter-signature">— Dari Kakak 🎈</div>
-            </div>
-
-            <div id="menu-trap" class="menu-content">
-                <h2>Pertanyaan Spesial 🔒</h2>
-                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab ya, Ayak.</p>
+            <div class="jebakan-box" id="jebakan-container">
+                <p id="teks-tanya" style="font-weight: bold; color: #ff6584; margin-bottom: 25px; font-size: 1.1rem;">Kamu mau gak jadi pacar Kakak?</p>
                 
-                <div class="jebakan-box" id="jebakan-container">
-                    <p id="teks-tanya" style="font-weight: bold; color: #ff6584; margin-bottom: 15px; font-size: 1.1rem;">Kamu mau gak jadi pacar Kakak?</p>
-                    
-                    <div id="opsi-container" style="display: flex; justify-content: center; width: 100%;">
-                        <button class="btn-jebakan" style="width: 140px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
-                    </div>
+                <!-- Wadah Tombol Pilihan -->
+                <div id="opsi-container" style="display: flex; justify-content: center; gap: 20px; width: 100%; min-height: 50px; position: relative;">
+                    <button id="btn-mau" class="btn-jebakan" style="width: 120px; background: linear-gradient(45deg, #25d366, #128c7e); margin: 0;" onclick="terimaCinta()">Mau 🥰</button>
+                    <button id="btn-ga" class="btn-jebakan" style="width: 120px; background: linear-gradient(45deg, #ff3333, #cc0000); margin: 0; position: absolute; left: 55%;" onmouseover="pindahTombol()" onclick="pindahTombol()">Enggak 😜</button>
+                </div>
 
-                    <div id="secret-message-target">
-                        <strong>Maaf ya kalau maksa soalnya kamu susah dikejar 🏃💨</strong><br>
-                        Tapi intinya Kakak serius kok, hehe. Selesai ini yuk lanjut buka tab Kado ya! 🎁
-                    </div>
+                <!-- Teks Kejutan Muncul Terpisah Setelah Klik Mau -->
+                <div id="secret-message-target" style="display: none; margin-top: 25px; padding: 15px; background: rgba(255, 101, 132, 0.1); border: 1px dashed var(--accent-color); border-radius: 12px; color: #fff; font-size: 0.95rem; line-height: 1.5; animation: tabFadeIn 0.5s ease forwards;">
+                    <strong>Maaf ya kalau maksa soalnya kamu susah dikejar 🏃💨</strong><br>
+                    Tapi intinya Kakak serius kok, hehe. Selesai ini yuk lanjut buka tab Cerita atau Pesan lagi ya! 🎁
                 </div>
             </div>
-
-            <div id="menu-gift" class="menu-content">
-                <h2>Buka Kado Kamu! 🎁</h2>
-                <p id="gift-instruction" style="color: #eee; font-size: 0.95rem; margin-bottom: 10px;">Ketuk kado misterius untuk mengaktifkan kembang api!</p>
-                
-                <div class="gift-box-final" id="final-gift" onclick="executeGrandFinale(event)">🎁</div>
-
-                <div id="wish-form-container">
-                    <p style="font-size: 0.9rem; color: #ffb367; margin-bottom: 8px; font-weight: bold;">Tulis doa kamu di sini: ✨</p>
-                    <textarea class="wish-textarea" id="user-wish" placeholder="Ketik harapan kamu..."></textarea>
-                    <button class="btn-send-wish" onclick="sendWishToWhatsApp()">Kirim Harapan ke Kakak 🚀</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
+    <!-- SISTEM LOGIKA JAVASCRIPT -->
     <script>
-        // --- MATRIX BACKGROUND ---
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        const mCtx = matrixCanvas.getContext('2d');
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-        const matrixChars = "0101011001";
-        const charArr = matrixChars.split("");
-        const fontSize = 14;
-        const columns = matrixCanvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
-
-        function drawMatrix() {
-            mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-            mCtx.fillStyle = '#00ff66';
-            mCtx.font = fontSize + 'px monospace';
-            for(let i = 0; i < drops.length; i++) {
-                const text = charArr[Math.floor(Math.random() * charArr.length)];
-                mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if(drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
-        const matrixInterval = setInterval(drawMatrix, 30);
-
-        // --- LOADING LOGS ---
-        const consoleLog = document.getElementById('consoleLog');
-        const logs = [
-            "[INFO] Menginisialisasi Protokol Kejutan...",
-            "[LOAD] Memuat berkas ucapan 'Selamat Ulang Tahun'...",
-            "[SUCCESS] Berkas foto & surat berhasil didekripsi.",
-            "[READY] Otentikasi Berhasil! Silakan klik Lanjutkan."
-        ];
-
-        let logIndex = 0;
-        function printLogs() {
-            if(logIndex < logs.length) {
-                consoleLog.innerHTML += logs[logIndex] + "<br>";
-                logIndex++;
-                setTimeout(printLogs, 250);
-            }
-        }
-        printLogs();
-
-        // --- PROGRESS BAR ---
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
-        const startBtn = document.getElementById('startBtn');
-        let progress = 0;
-
-        function updateLoading() {
-            if (progress < 100) {
-                progress += Math.floor(Math.random() * 10) + 5;
-                if(progress > 100) progress = 100;
-                progressBar.style.width = progress + '%';
-                progressText.innerText = progress + '%';
-                setTimeout(updateLoading, 60);
-            } else {
-                startBtn.style.display = "block";
-            }
-        }
-        updateLoading();
-
-        function enterMainSystem() {
-            clearInterval(matrixInterval);
-            document.getElementById('loading-screen').style.display = 'none';
-            const mainInt = document.getElementById('main-interface');
-            mainInt.style.display = 'flex';
-            setTimeout(() => { mainInt.style.opacity = '1'; }, 50);
-            toggleMusic();
-        }
-
-        // --- NAVIGATION MENU ---
-        let letterTyped = false;
-        function switchMenu(menuId, tabElement) {
-            document.querySelectorAll('.menu-content').forEach(content => content.classList.remove('active'));
-            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
+        // --- LOGIKA PERGANTIAN TAB MENU ---
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.menu-content');
             
-            document.getElementById(menuId).classList.add('active');
-            tabElement.classList.add('active');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
 
-            if (menuId === 'menu-letter' && !letterTyped) {
-                letterTyped = true;
-                typeWriter(suratText, 0);
+            // Reset tombol jika kembali ke menu rahasia
+            if(index === 3) {
+                const btnGa = document.getElementById('btn-ga');
+                if(btnGa) {
+                    btnGa.style.display = 'block';
+                    btnGa.style.transform = 'none';
+                }
+                document.getElementById('secret-message-target').style.display = 'none';
             }
+        }
+
+        // --- LOGIKA TOMBOL JEBAKAN (KABUR SAAT DIKURSOR / DITEKAN) ---
+        function pindahTombol() {
+            const btnGa = document.getElementById('btn-ga');
+            // Menghitung posisi acak secara dinamis di area kontainer agar aman tidak keluar layar
+            const x = Math.floor(Math.random() * 160) - 80;
+            const y = Math.floor(Math.random() * 120) - 60;
+            
+            btnGa.style.transform = `translate(${x}px, ${y}px)`;
         }
 
         // --- AKSI KLIK TOMBOL MAU ---
         function terimaCinta() {
             burstHearts('💖');
-            // Menampilkan pesan terpisah "Maaf ya..." tepat di bawahnya sesuai instruksi
+            burstHearts('✨');
+            
+            // Sembunyikan tombol "Enggak" setelah berhasil dipaksa klik Mau
+            document.getElementById('btn-ga').style.display = 'none';
+            
+            // Kembalikan posisi tombol Mau ke posisi semula biar simetris
+            document.getElementById('btn-mau').style.transform = 'none';
+            
+            // Tampilkan pesan pasrah rahasia di bawahnya secara langsung
             document.getElementById('secret-message-target').style.display = 'block';
         }
 
-        // --- FLOATING ANIMATIONS & EFFECTS ---
-        const bgSpace = document.getElementById('bgSpace');
-        const canvas = document.getElementById('canvas-fireworks');
-        const ctx = canvas.getContext('2d');
-        const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
+        // --- EFEK BURST LOVEMETER PARTICLES ---
         function burstHearts(emoji) {
-            for (let i = 0; i < 10; i++) {
+            const container = document.getElementById('jebakan-container');
+            for (let i = 0; i < 12; i++) {
                 const heart = document.createElement('div');
-                heart.className = 'floating-item';
+                heart.classList.add('heart-particle');
                 heart.innerText = emoji;
-                heart.style.left = (Math.random() * 80 + 10) + 'vw';
-                heart.style.setProperty('--speed', (Math.random() * 2 + 1.5) + 's');
-                heart.style.setProperty('--size', (Math.random() * 20 + 15) + 'px');
-                heart.style.setProperty('--opac', Math.random() * 0.6 + 0.3);
-                bgSpace.appendChild(heart);
-                setTimeout(() => { heart.remove(); }, 3500);
+                
+                // Atur posisi memancar acak
+                heart.style.left = (Math.random() * 60 + 20) + '%';
+                heart.style.top = (Math.random() * 30 + 30) + 'px';
+                heart.style.animationDelay = (Math.random() * 0.2) + 's';
+                
+                container.appendChild(heart);
+                
+                // Bersihkan elemen setelah animasi selesai
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
             }
-        }
-
-        function spawnFloatingItem() {
-            if(document.getElementById('main-interface').style.display === 'flex') {
-                const item = document.createElement('div');
-                item.className = 'floating-item';
-                item.innerText = items[Math.floor(Math.random() * items.length)];
-                item.style.left = Math.random() * 100 + 'vw';
-                item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
-                item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
-                item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
-                bgSpace.appendChild(item);
-                setTimeout(() => { item.remove(); }, 8000);
-            }
-        }
-        setInterval(spawnFloatingItem, 800);
-
-        // --- AUDIO ---
-        const audio = document.getElementById('bgMusic');
-        const musicBtn = document.getElementById('musicBtn');
-        let isPlaying = false;
-        function toggleMusic() {
-            if (isPlaying) {
-                audio.pause(); musicBtn.innerText = '🔇'; isPlaying = false;
-            } else {
-                audio.play().then(() => { musicBtn.innerText = '🎵'; isPlaying = true; }).catch(() => {});
-            }
-        }
-
-        // --- PHOTO SLIDER ---
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.polaroid-slide');
-        function changeSlide(direction) {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + direction + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }
-
-        // --- TYPEWRITER LETTER ---
-        const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉\n\nSengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. Semoga di usia yang baru ini, kuliahmu dilancarkan, selalu diberi kesehatan, dan dikelilingi orang-orang tulus yang menyayangimu. Happy Birthday, Ayak! 💖`;
-        function typeWriter(text, i) {
-            const box = document.getElementById("surat-box");
-            if (i < text.length) {
-                box.innerHTML = text.substring(0, i + 1);
-                box.scrollTop = box.scrollHeight;
-                setTimeout(function() { typeWriter(text, i + 1) }, 40);
-            } else {
-                document.getElementById("letter-signature").style.opacity = "1";
-            }
-        }
-
-        // --- FIREWORKS ---
-        let particles = [];
-        function createFirework(x, y) {
-            for (let i = 0; i < 30; i++) {
-                particles.push({
-                    x: x, y: y,
-                    vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5,
-                    alpha: 1, color: '#ff6584'
-                });
-            }
-        }
-        function animateFireworks() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
-                ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 2, 0, Math.PI * 2); ctx.fill();
-                if (p.alpha <= 0) particles.splice(i, 1);
-            }
-            requestAnimationFrame(animateFireworks);
-        }
-        function executeGrandFinale(e) {
-            if(e) e.stopPropagation();
-            document.getElementById("final-gift").style.display = 'none';
-            document.getElementById("gift-instruction").innerText = "Yeay! Kado terbuka! 🥳🎆";
-            canvas.style.display = "block";
-            animateFireworks();
-            setInterval(() => createFirework(Math.random() * canvas.width, Math.random() * (canvas.height * 0.5)), 500);
-            document.getElementById("wish-form-container").style.display = "block";
-        }
-
-        function sendWishToWhatsApp() {
-            const wishText = document.getElementById("user-wish").value.trim();
-            if (wishText === "") return;
-            window.open(`https://api.whatsapp.com/send?phone=628xxxxxxxxxx&text=${encodeURIComponent(wishText)}`, '_blank');
         }
     </script>
 </body>
