@@ -101,10 +101,15 @@
         .content-surat {
             text-align: justify;
             white-space: pre-line;
-            max-height: 180px;
+            max-height: 220px;
             overflow-y: auto;
             padding-right: 8px;
             margin-top: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .content-surat::-webkit-scrollbar {
@@ -200,7 +205,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Pembungkus Tombol Pilihan */
         .btn-wrapper {
             display: flex;
             justify-content: center;
@@ -230,7 +234,6 @@
             box-shadow: 0 15px 30px rgba(255, 101, 132, 0.6);
         }
 
-        /* Tombol Kabur Jail */
         #btn-no {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -319,6 +322,8 @@
             color: #ffb367;
             font-weight: bold;
             font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
         .music-control {
@@ -412,16 +417,10 @@
 
             <button class="love-interaction-btn" onclick="burstHearts(event)">❤️ Click Me!</button>
 
-            <div class="content-surat">
-                Selamat ulang tahun ya, Ayak! 🥳🎉
-
-                Sengaja Kakak buatin halaman web sederhana ini biar hari ulang tahunmu kali ini ada variasi hiburan yang beda sedikit.
-
-                Semoga di usia yang baru ini, kuliahmu dilancarkan, segala urusan ke depannya dipermudah, sehat terus, dan tentunya selalu dikelilingi hal-hal baik setiap hari. 
-
-                Tetap semangat menjalani rutinitas harianmu. Jangan lupa istirahat kalau capek, jalani hari dengan santai, dan pastinya jangan lupa buat tersenyum hari ini! 
-            </div>
-            <div class="footer-note">
+            <!-- Text Area Kosong untuk Efek Mengetik Otomatis -->
+            <div class="content-surat" id="typewriter-text"></div>
+            
+            <div class="footer-note" id="footer-signature">
                 – Dari Kakak 🎈
             </div>
         </div>
@@ -441,17 +440,14 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // Efek Tombol Kabur Hilang
+        // Efek Tombol Kabur Jail
         function flyAway() {
-            // Menghitung posisi acak di dalam area halaman web
             const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 40) + 20;
             const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 40) + 20;
-            
             btnNo.style.position = 'fixed';
             btnNo.style.left = x + 'px';
             btnNo.style.top = y + 'px';
             
-            // Mengubah teks teks pertanyaan biar tambah kocak pas tombolnya kabur
             const funnyTexts = [
                 "Eits, gak bisa diklik! 😜",
                 "Harus klik 'Mau Banget!' pokoknya! 🤣",
@@ -462,7 +458,7 @@
             document.getElementById('question-text').innerText = funnyTexts[Math.floor(Math.random() * funnyTexts.length)];
         }
 
-        // Semburan Hati / Emoji Kucing Berguling
+        // Semburan Hati / Emoji
         function burstHearts(e, customEmoji) {
             if(e) e.stopPropagation();
             const emoji = customEmoji || '❤️';
@@ -484,7 +480,6 @@
         // Slideshow Galeri Foto
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
-
         function changeSlide(direction) {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + direction + slides.length) % slides.length;
@@ -496,12 +491,10 @@
             const item = document.createElement('div');
             item.className = 'floating-item';
             item.innerText = items[Math.floor(Math.random() * items.length)];
-            
             item.style.left = Math.random() * 100 + 'vw';
             item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
             item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
             item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
-            
             bgSpace.appendChild(item);
             setTimeout(() => { item.remove(); }, 8000);
         }
@@ -525,13 +518,12 @@
 
         // Pop-up Beruntun
         const alerts = [
-            "Cieee yang ngeklik 'Mau Banget!'... 😜",
-            "Yakin nih mau buka isi pesannya sekarang? 🤔",
-            "Bentar... kumpulin dulu senyumnya yang manis! 🥰",
-            "Oke, hitungan ketiga ya...",
-            "1... 🐾",
-            "2... 🐱",
-            "3!!! Selamat melihat kejutan utamanya, Ayak! 🎉🥳"
+            "Cieee yang terpaksa klik 'Mau Banget!'... 😜",
+            "Niatnya mau nolak tapi gagal kan? Hahaha! 🤣",
+            "Tapi serius... makasih ya udah meluangkan waktu buat buka ini. 🥰",
+            "Sekarang, atur posisi duduknya...",
+            "Tarik napas dalam-dalam... 🍃",
+            "Dan siap-siap baca ini ya, Ayak... ✨"
         ];
 
         function runAlertChain(index) {
@@ -551,8 +543,40 @@
             runAlertChain(0);
         }
 
+        // --- TEKS SURAT EMOSIONAL MENYENTUH HATI ---
+        const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉
+
+Sengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. 
+
+Mungkin selama ini kita sering bercanda, seru-seruan bareng, atau kadang Kakak jailin kamu sampai kesel. Tapi di hari ini, Kakak mau jujur dari hati yang paling dalam...
+
+Kakak bersyukur banget bisa kenal dan ada di dekat kamu sampai detik ini. Melihat kamu berjuang kuliah, melewati hari-hari sibukmu, itu bikin Kakak bangga banget sama kamu.
+
+Semoga di usia yang baru ini, segala lelahmu berubah jadi berkah. Kuliahmu dilancarkan, jalan masa depanmu dipermudah, selalu diberi kesehatan, dan dikelilingi orang-orang tulus yang menyayangimu.
+
+Kalau nanti ada hari-hari yang terasa berat atau melelahkan, inget ya... kamu nggak sendirian. Selalu ada Kakak di sini yang siap dengerin cerita kamu, atau sekadar jadi tempat kamu rehat.
+
+Jangan pernah lupa buat tersenyum hari ini, karena senyuman lebar kamu itu berharga banget. 
+
+Sekali lagi, Happy Birthday, Ayak! 💖`;
+
+        function typeWriter(text, i, fnCallback) {
+            if (i < text.length) {
+                document.getElementById("typewriter-text").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+                
+                // Efek auto-scroll ke bawah saat teks mengetik otomatis
+                const scrollArea = document.getElementById("typewriter-text");
+                scrollArea.scrollTop = scrollArea.scrollHeight;
+
+                setTimeout(function() {
+                    typeWriter(text, i + 1, fnCallback)
+                }, 45); // Kecepatan ketik per karakter (milidetik)
+            } else if (typeof fnCallback == 'function') {
+                setTimeout(fnCallback, 700);
+            }
+        }
+
         function showMainSurat() {
-            // Kembalikan posisi tombol no jika diperlukan
             btnNo.style.display = 'none';
             burstHearts(null, '✨');
             const pageUtama = document.getElementById('page-utama');
@@ -569,6 +593,16 @@
                     pageSurat.style.transition = "all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
                     pageSurat.style.opacity = "1";
                     pageSurat.style.transform = "scale(1) translateZ(0)";
+                    
+                    // Memulai efek ketik otomatis surat emosional setelah halaman terbuka
+                    setTimeout(() => {
+                        typeWriter(suratText, 0, function(){
+                            // Munculkan tanda tangan setelah pengetikan selesai
+                            document.getElementById("footer-signature").style.opacity = "1";
+                            burstHearts(null, '❤️');
+                        });
+                    }, 500);
+
                 }, 50);
             }, 400);
         }
