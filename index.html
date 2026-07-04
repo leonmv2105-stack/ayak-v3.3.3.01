@@ -17,6 +17,7 @@
             margin: 0;
             padding: 0;
             user-select: none; /* Mencegah teks di-blok/copy */
+            -webkit-user-select: none;
         }
 
         body {
@@ -24,7 +25,7 @@
             background: var(--bg-gradient);
             color: #fff;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -42,7 +43,7 @@
             text-align: center;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
             transform-style: preserve-3d;
-            transform: rotateX(10deg) rotateY(-10deg);
+            transform: rotateX(5deg) rotateY(-5deg);
             transition: transform 0.5s ease;
             max-width: 500px;
             width: 90%;
@@ -54,63 +55,70 @@
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             background: linear-gradient(45deg, #ff7597, #f9a826);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             animation: glow 2s ease-in-out infinite alternate;
         }
 
         p.message {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #e0e0e0;
             line-height: 1.6;
             margin-bottom: 30px;
         }
 
         /* --- PURE CSS ART: KUCING SULIT DITIRU --- */
-        /* Kucing ini dibuat manual dengan CSS shapes, bukan aset eksternal */
         .cat-art {
             position: relative;
             width: 150px;
-            height: 150px;
-            margin: 0 auto 30px auto;
+            height: 130px;
+            margin: 0 auto 20px auto;
         }
 
         .cat-head {
             position: absolute;
-            bottom: 10px;
+            bottom: 0;
             left: 15px;
             width: 120px;
             height: 100px;
             background: var(--cat-color);
             border-radius: 50% 50% 45% 45%;
+            z-index: 2;
         }
 
         .ear {
             position: absolute;
-            top: -15px;
-            width: 40px;
-            height: 50px;
+            top: 10px;
+            width: 45px;
+            height: 55px;
             background: var(--cat-color);
+            z-index: 1;
+        }
+        .ear.left { 
+            left: 10px; 
+            transform: rotate(-20deg); 
             border-radius: 30% 70% 30% 40%;
         }
-        .ear.left { left: 5px; transform: rotate(-20deg); }
-        .ear.right { right: 5px; transform: rotate(20deg); border-radius: 70% 30% 40% 30%; }
+        .ear.right { 
+            right: 10px; 
+            transform: rotate(20deg); 
+            border-radius: 70% 30% 40% 30%; 
+        }
 
         .ear-inner {
-            content: '';
             position: absolute;
             top: 10px;
-            left: 8px;
             width: 24px;
             height: 35px;
             background: #ff8da1;
-            border-radius: inherit;
         }
+        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
+        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
 
         .eye {
             position: absolute;
@@ -166,6 +174,7 @@
             box-shadow: 0 10px 20px rgba(255, 117, 151, 0.4);
             transition: all 0.3s;
             font-size: 1rem;
+            outline: none;
         }
 
         .btn-surprise:hover {
@@ -173,16 +182,14 @@
             box-shadow: 0 15px 25px rgba(255, 117, 151, 0.6);
         }
 
-        /* --- PARTIKEL SULIT DITIRU (DIBUAT LEWAT JS) --- */
+        /* --- PARTIKEL SULIT DITIRU --- */
         .paw-particle {
             position: absolute;
             pointer-events: none;
-            opacity: 0;
             background: rgba(255, 117, 151, 0.7);
-            width: 12px;
-            height: 12px;
             border-radius: 50%;
             animation: floatUp 2s linear forwards;
+            z-index: 9999;
         }
 
         /* --- ANIMATIONS --- */
@@ -196,17 +203,17 @@
         }
         @keyframes floatUp {
             0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+            100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="card-container">
-        <!-- Struktur Kucing CSS Art murni -->
+        <!-- Struktur Kucing Murni CSS Art -->
         <div class="cat-art">
             <div class="ear left"><div class="ear-inner"></div></div>
-            <div class="ear-right ear"><div class="ear-inner"></div></div>
+            <div class="ear right"><div class="ear-inner"></div></div>
             <div class="cat-head">
                 <div class="eye left"></div>
                 <div class="eye right"></div>
@@ -224,21 +231,33 @@
     <script>
         /* --- JAVASCRIPT PROTEKSI & INTERAKTIF ADVANCED --- */
 
-        // 1. Fitur Interaktif: Efek Jejak Kaki/Partikel Mengikuti Kursor
+        // 1. Efek Partikel Mengikuti Gerakan Kursor
         document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.85) { // Membatasi jumlah partikel agar tidak lag
-                createParticle(e.pageX, e.pageY);
+            if (Math.random() > 0.85) { 
+                createParticle(e.clientX, e.clientY);
+            }
+        });
+
+        // Dukungan untuk Layar Sentuh HP
+        document.addEventListener('touchmove', (e) => {
+            if (Math.random() > 0.85 && e.touches.length > 0) {
+                createParticle(e.touches[0].clientX, e.touches[0].clientY);
             }
         });
 
         function createParticle(x, y) {
             const particle = document.createElement('div');
             particle.className = 'paw-particle';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
             
-            // Variasi acak ukuran dan warna halus
-            const size = Math.random() * 15 + 10;
+            // Atur posisi berdasarkan koordinat viewport + scroll
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            particle.style.left = (x + scrollLeft) + 'px';
+            particle.style.top = (y + scrollTop) + 'px';
+            
+            // Dimensi acak partikel bulatan paw halus
+            const size = Math.random() * 12 + 8;
             particle.style.width = size + 'px';
             particle.style.height = size + 'px';
             
@@ -249,22 +268,25 @@
             }, 2000);
         }
 
-        // 2. Fitur Kejutan Saat Tombol Di-klik
+        // 2. Efek Ledakan Partikel Saat Tombol Diklik
         function triggerSurprise() {
             alert("Meoww! 🐱 Ada salam hangat dari semua kucing di dunia! Semoga semua impianmu terwujud nyata tahun ini!");
-            // Efek ledakan partikel
-            for(let i=0; i<30; i++) {
+            
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            for(let i = 0; i < 35; i++) {
                 setTimeout(() => {
-                    createParticle(window.innerWidth/2 + (Math.random() - 0.5)*300, window.innerHeight/2 + (Math.random() - 0.5)*300);
-                }, i * 50);
+                    const randomX = centerX + (Math.random() - 0.5) * 250;
+                    const randomY = centerY + (Math.random() - 0.5) * 250;
+                    createParticle(randomX, randomY);
+                }, i * 40);
             }
         }
 
-        // 3. CODE PROTECTION (Membuat Kode Sulit Dicontek Orang Awam)
-        // Memblokir Klik Kanan
+        // 3. SECURE CODE MANAGEMENT (Proteksi dari Intaian Inspect Element Awam)
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        // Memblokir Shortcut F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
         document.addEventListener('keydown', (e) => {
             if (
                 e.key === 'F12' ||
