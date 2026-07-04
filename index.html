@@ -1,21 +1,954 @@
-<!-- MENU NEW: JEBAKAN PILIHAN BERLAPIS -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD Ayak! 🐾</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0d0a14 0%, #1b1124 50%, #2b1428 100%);
+            --accent-color: #ff6584;
+            --cat-color: #f9a826;
+            --hacker-green: #00ff66;
+            --error-red: #ff3333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #050508;
+            color: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        /* --- SCREEN LOADING HACKER --- */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .loader-console {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid var(--hacker-green);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.2);
+            z-index: 2;
+        }
+
+        .console-log {
+            height: 140px;
+            overflow-y: hidden;
+            font-size: 0.85rem;
+            color: var(--hacker-green);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(0, 255, 102, 0.5);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.2);
+            height: 25px;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00aa44, var(--hacker-green));
+            box-shadow: 0 0 10px var(--hacker-green);
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .btn-start-system {
+            display: none;
+            width: 100%;
+            background: var(--hacker-green);
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 15px var(--hacker-green);
+            animation: pulseGlow 1.5s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.98); opacity: 0.8; }
+        }
+
+        /* --- INTERFACE UTAMA --- */
+        #main-interface {
+            display: none;
+            opacity: 0;
+            width: 100%;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            padding: 20px 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        #canvas-fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+            display: none;
+        }
+
+        .card-container {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 30px 15px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 40px rgba(255, 101, 132, 0.05);
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out;
+            max-width: 460px;
+            width: 95%;
+            z-index: 10;
+            margin: auto;
+            position: relative;
+        }
+
+        /* --- SISTEM MENU TAB --- */
+        .menu-navigation {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 4px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .menu-tab {
+            padding: 8px 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.6);
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 75px;
+        }
+
+        .menu-tab.active {
+            color: #fff;
+            background: linear-gradient(45deg, var(--accent-color), #ff4b72);
+            box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
+        }
+
+        .menu-content {
+            display: none;
+            animation: tabFadeIn 0.4s ease forwards;
+        }
+
+        .menu-content.active {
+            display: block;
+        }
+
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #ff6584, #ffac67);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        /* Menu 1: Beranda */
+        .cat-art {
+            position: relative;
+            width: 130px;
+            height: 110px;
+            margin: 0 auto 20px auto;
+        }
+        .cat-head {
+            position: absolute;
+            bottom: 0;
+            left: 5px;
+            width: 120px;
+            height: 90px;
+            background: var(--cat-color);
+            border-radius: 50% 50% 45% 45%;
+            z-index: 2;
+        }
+        .ear { position: absolute; top: 10px; width: 45px; height: 50px; background: var(--cat-color); z-index: 1; }
+        .ear.left { left: 5px; transform: rotate(-25deg); border-radius: 30% 70% 30% 40%; }
+        .ear.right { right: 5px; transform: rotate(25deg); border-radius: 70% 30% 40% 30%; }
+        .ear-inner { position: absolute; top: 8px; width: 24px; height: 32px; background: #ff8da1; }
+        .ear.left .ear-inner { left: 8px; border-radius: 30% 70% 30% 40%; }
+        .ear.right .ear-inner { right: 8px; border-radius: 70% 30% 40% 30%; }
+        .eye { position: absolute; top: 30px; width: 18px; height: 18px; background: #fff; border-radius: 50%; animation: blink 4s infinite; }
+        .eye.left { left: 25px; } .eye.right { right: 25px; }
+        .eye::after { content: ''; position: absolute; top: 4px; left: 4px; width: 9px; height: 9px; background: #111; border-radius: 50%; }
+        .nose { position: absolute; top: 50px; left: 55px; width: 10px; height: 7px; background: #ff8da1; border-radius: 50% 50% 60% 60%; }
+        .mouth { position: absolute; top: 56px; left: 50px; width: 20px; height: 8px; border-bottom: 3px solid #553c11; border-radius: 0 0 10px 10px; }
+
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+
+        /* Menu 2: Galeri */
+        .polaroid-gallery {
+            position: relative;
+            background: #ffffff;
+            padding: 12px 12px 42px 12px;
+            border-radius: 2px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transform: rotate(-2deg);
+            width: 210px;
+            margin: 10px auto 20px auto;
+        }
+
+        .polaroid-viewport {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background: #222;
+            overflow: hidden;
+        }
+
+        .polaroid-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        .polaroid-slide.active { opacity: 1; z-index: 2; }
+        .polaroid-slide img { width: 100%; height: 100%; object-fit: cover; }
+
+        .nav-btn {
+            position: absolute;
+            bottom: 8px;
+            background: rgba(0, 0, 0, 0.08);
+            color: #333;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            font-size: 0.8rem;
+        }
+        .prev-btn { left: 15px; } .next-btn { right: 15px; }
+        .gallery-caption { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #333; font-weight: bold; }
+
+        /* Menu 3: Surat */
+        .content-surat {
+            text-align: justify;
+            white-space: pre-line;
+            max-height: 230px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+        .content-surat::-webkit-scrollbar { width: 4px; }
+        .content-surat::-webkit-scrollbar-thumb { background: rgba(255, 101, 132, 0.4); border-radius: 10px; }
+
+        .footer-note {
+            margin-top: 15px;
+            text-align: right;
+            font-style: italic;
+            color: #ffb367;
+            font-weight: bold;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Menu Jebakan Cinta & Kado */
+        .jebakan-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-top: 20px;
+            min-height: 220px;
+            position: relative;
+        }
+
+        .btn-jebakan {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            width: 85%;
+            max-width: 300px;
+        }
+        .btn-jebakan:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Efek Tombol Lari */
+        #btn-lari {
+            position: absolute;
+            transition: all 0.15s ease-out;
+            z-index: 99;
+        }
+
+        /* Fake Blue Screen / Crash Overlay */
+        #fake-error-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0000aa;
+            color: white;
+            z-index: 10000;
+            font-family: monospace;
+            padding: 40px 20px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        .gift-box-final {
+            display: inline-block;
+            margin: 15px auto;
+            font-size: 2.8rem;
+            cursor: pointer;
+            animation: bounceGift 1.2s infinite ease-in-out;
+            transition: all 0.3s;
+        }
+        @keyframes bounceGift {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.08); filter: drop-shadow(0 15px 15px rgba(255, 101, 132, 0.3)); }
+        }
+
+        #wish-form-container {
+            display: none;
+            margin-top: 15px;
+            animation: tabFadeIn 0.5s ease;
+        }
+
+        .wish-textarea {
+            width: 100%;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 101, 132, 0.3);
+            border-radius: 12px;
+            padding: 10px;
+            color: white;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        .wish-textarea:focus { border-color: var(--accent-color); }
+
+        .btn-send-wish {
+            background: linear-gradient(45deg, #25d366, #128c7e);
+            border: none;
+            padding: 10px 25px;
+            color: white;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .floating-item {
+            position: absolute;
+            bottom: -50px;
+            pointer-events: none;
+            animation: floatUpward var(--speed) linear forwards;
+            opacity: 0.6;
+            font-size: var(--size);
+            z-index: 2;
+        }
+        @keyframes floatUpward {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: var(--opac); }
+            90% { opacity: var(--opac); }
+            100% { transform: translateY(-105vh) rotate(360deg); opacity: 0; }
+        }
+
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FAKE ERROR OVERLAY (BLUE SCREEN OF DEATH) -->
+    <div id="fake-error-overlay">
+        <!-- Teks default ini akan di-overwrite otomatis lewat javascript saat tombol diklik -->
+    </div>
+
+    <!-- SCREEN LOADING ALA HACKER -->
+    <div id="loading-screen">
+        <canvas id="matrix-canvas"></canvas>
+        <div class="loader-console">
+            <div class="console-log" id="consoleLog"></div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+            <button class="btn-start-system" id="startBtn" onclick="enterMainSystem()">BYPASS & ENTER SYSTEM</button>
+        </div>
+    </div>
+
+    <!-- INTERFACE UTAMA -->
+    <div id="main-interface">
+        <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
+        <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
+
+        <canvas id="canvas-fireworks"></canvas>
+        <div class="floating-bg" id="bgSpace"></div>
+
+        <div class="card-container" id="main-card">
+            
+            <!-- MENU NAVIGASI -->
+            <div class="menu-navigation">
+                <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
+                <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
+                <button class="menu-tab" onclick="switchMenu('menu-letter', this)">✉️ Surat</button>
+                <button class="menu-tab" onclick="switchMenu('menu-trap', this)">🔒 Rahasia</button>
+                <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Kado</button>
+            </div>
+
+            <!-- MENU 1: UTAMA -->
+            <div id="menu-home" class="menu-content active">
+                <div class="cat-art">
+                    <div class="ear left"><div class="ear-inner"></div></div>
+                    <div class="ear right"><div class="ear-inner"></div></div>
+                    <div class="cat-head">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                        <div class="nose"></div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+                <h1>HBD Ayak! 🐾</h1>
+                <p style="line-height: 1.6; color: #eee; margin-top: 15px;">
+                    Selamat datang di halaman rahasia yang dirancang khusus untuk hari ulang tahunmu! ✨<br><br>
+                    Silakan jelajahi menu-menu di atas untuk melihat kejutan yang sudah disiapkan ya, Ayak! 🥰
+                </p>
+            </div>
+
+            <!-- MENU 2: GALERI FOTO -->
+            <div id="menu-gallery" class="menu-content">
+                <h2>Our Gallery ✨</h2>
+                <div class="polaroid-gallery">
+                    <div class="polaroid-viewport">
+                        <div class="polaroid-slide active"><img src="ayak.1/ay1.jpeg" alt="Moment 1"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay2.jpeg" alt="Moment 2"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay3.jpeg" alt="Moment 3"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay4.jpeg" alt="Moment 4"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay5.jpeg" alt="Moment 5"></div>
+                        <div class="polaroid-slide"><img src="ayak.1/ay6.jpeg" alt="Moment 6"></div>
+                    </div>
+                    <button class="nav-btn prev-btn" onclick="changeSlide(-1)">◀</button>
+                    <div class="gallery-caption">moments 🐾</div>
+                    <button class="nav-btn next-btn" onclick="changeSlide(1)">▶</button>
+                </div>
+                <p style="font-size: 0.85rem; color: #aaa;">Klik panah untuk melihat lembar memori lainnya.</p>
+            </div>
+
+            <!-- MENU 3: SURAT -->
+            <div id="menu-letter" class="menu-content">
+                <h2>Pesan Dari Kakak ✉️</h2>
+                <div class="content-surat" id="surat-box"></div>
+                <div class="footer-note" id="letter-signature">— Dari Kakak 🎈</div>
+            </div>
+
+            <!-- MENU 4: JEBAKAN CINTA & KESAL -->
             <div id="menu-trap" class="menu-content">
                 <h2>Pertanyaan Serius 🔒</h2>
                 <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 15px;">Tolong dijawab dengan jujur ya, Ayak.</p>
                 
-                <div class="jebakan-box" id="jebakan-container" style="min-height: 220px; justify-content: center;">
-                    <!-- Teks Pertanyaan yang Bakal Berubah Otomatis -->
-                    <p id="teks-tanya" style="font-weight: bold; color: #ff6584; margin-bottom: 15px; font-size: 1.1rem; padding: 0 10px;">Kamu mau gak jadi pacar Kakak?</p>
-                    
-                    <!-- Area Tombol Pilihan -->
-                    <div id="opsi-container" style="display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;">
-                        <button class="btn-jebakan" style="width: 120px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
-                        <button class="btn-jebakan" id="btn-tolak" style="width: 120px; background: linear-gradient(45deg, #ff3333, #cc0000);" onclick="prosesTolak()">Enggak 😜</button>
+                <div class="jebakan-box" id="jebakan-container" style="min-height: 220px;">
+                    <!-- Skenario 1: Tombol Nembak Lari -->
+                    <p style="font-weight: bold; color: #ff6584; margin-bottom: 10px;">Kamu mau gak jadi pacar Kakak?</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; width: 100%; position: relative; height: 50px;">
+                        <button class="btn-jebakan" style="width: 100px; background: linear-gradient(45deg, #25d366, #128c7e);" onclick="terimaCinta()">Mau 🥰</button>
+                        <button class="btn-jebakan" id="btn-lari" style="width: 100px; position: absolute; left: 55%; margin-top: 0;" onmouseover="kaburAja()">Enggak 😜</button>
                     </div>
                     
-                    <hr style="width: 100%; border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+                    <hr style="width: 100%; border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 15px 0;">
 
                     <!-- Skenario 2: Surat Cinta Crash Screen -->
                     <button class="btn-jebakan" style="width: 85%;" onclick="pemicuFakeCrash()">✉️ Buka Surat Cinta Rahasia</button>
                 </div>
             </div>
+
+            <!-- MENU 5: SURPRISE KADO -->
+            <div id="menu-gift" class="menu-content">
+                <h2>Buka Kado Kamu! 🎁</h2>
+                <p id="gift-instruction" style="color: #eee; font-size: 0.95rem; margin-bottom: 10px;">Ketuk kado misterius di bawah ini untuk mengaktifkan perayaan puncak!</p>
+                
+                <div class="gift-box-final" id="final-gift" onclick="executeGrandFinale(event)">🎁</div>
+
+                <!-- Form Pengiriman Harapan Otomatis -->
+                <div id="wish-form-container">
+                    <p style="font-size: 0.9rem; color: #ffb367; margin-bottom: 8px; font-weight: bold;">Tulis harapan/doa kamu di sini: ✨</p>
+                    <textarea class="wish-textarea" id="user-wish" placeholder="Ketik apa saja harapan kamu di hari ulang tahun ini..."></textarea>
+                    <button class="btn-send-wish" onclick="sendWishToWhatsApp()">Kirim Harapan ke Kakak 🚀</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- MATRIX CANVAS BACKGROUND ---
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        const mCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+        
+        const matrixChars = "0101011001010101010100101011011001";
+        const charArr = matrixChars.split("");
+        const fontSize = 14;
+        const columns = matrixCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            mCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            mCtx.fillStyle = '#00ff66';
+            mCtx.font = fontSize + 'px monospace';
+            for(let i = 0; i < drops.length; i++) {
+                const text = charArr[Math.floor(Math.random() * charArr.length)];
+                mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if(drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        const matrixInterval = setInterval(drawMatrix, 30);
+
+        // --- CONSOLE HACKER SYSTEM LOGS ---
+        const consoleLog = document.getElementById('consoleLog');
+        const logs = [
+            "[INFO] Menginisialisasi Protokol Kejutan...",
+            "[SECURE] Menghubungkan jaringan data sentimental...",
+            "[SYSTEM] Memuat berkas memori kebahagiaan...",
+            "[DECRYPT] Membuka enkripsi folder 'Ayak.1'...",
+            "[SUCCESS] Berkas foto berhasil diekstrak.",
+            "[SYSTEM] Membuka bypass sistem pertahanan cuek...",
+            "[INFO] Menyiapkan modul kue virtual & kembang api...",
+            "[READY] Otentikasi User 'Ayak' Berhasil!"
+        ];
+
+        let logIndex = 0;
+        function printLogs() {
+            if(logIndex < logs.length) {
+                consoleLog.innerHTML += logs[logIndex] + "<br>";
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+                logIndex++;
+                setTimeout(printLogs, Math.random() * 300 + 100);
+            }
+        }
+        printLogs();
+
+        // --- PROGRESS LOADING ACTION ---
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const startBtn = document.getElementById('startBtn');
+        let progress = 0;
+
+        function updateLoading() {
+            if (progress < 100) {
+                progress += Math.floor(Math.random() * 5) + 2;
+                if(progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+                progressText.innerText = progress + '%';
+                setTimeout(updateLoading, 60);
+            } else {
+                consoleLog.innerHTML += "<span style='color:#fff;'>[COMPLETE] Tekan tombol di bawah untuk masuk...</span>";
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+                startBtn.style.display = "block";
+            }
+        }
+        updateLoading();
+
+        function enterMainSystem() {
+            clearInterval(matrixInterval);
+            document.getElementById('loading-screen').style.display = 'none';
+            
+            const mainInt = document.getElementById('main-interface');
+            mainInt.style.display = 'flex';
+            setTimeout(() => { mainInt.style.opacity = '1'; }, 50);
+            
+            toggleMusic();
+        }
+
+        // --- INTERFACE CONTROL & EFFECT ---
+        const card = document.getElementById('main-card');
+        const bgSpace = document.getElementById('bgSpace');
+        const canvas = document.getElementById('canvas-fireworks');
+        const ctx = canvas.getContext('2d');
+        const items = ['✨', '🐾', '🎈', '🐱', '🌸'];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+        });
+
+        // --- NAVIGATION TAB HANDLING ---
+        let letterTyped = false;
+        function switchMenu(menuId, tabElement) {
+            document.querySelectorAll('.menu-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.menu-tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(menuId).classList.add('active');
+            tabElement.classList.add('active');
+
+            if (menuId === 'menu-letter' && !letterTyped) {
+                letterTyped = true;
+                typeWriter(suratText, 0);
+            }
+            
+            // Reset posisi tombol lari jika user pindah menu lalu kembali lagi
+            if(menuId === 'menu-trap') {
+                const btnLari = document.getElementById('btn-lari');
+                btnLari.style.top = '0px';
+                btnLari.style.left = '55%';
+            }
+        }
+
+        // --- AKSI JEBAKAN CINTA & KESAL ---
+        function kaburAja() {
+            const btnLari = document.getElementById('btn-lari');
+            const container = document.getElementById('jebakan-container');
+            
+            // Cari batas acak di dalam area kontainer menu rahasia
+            const maxW = container.clientWidth - btnLari.clientWidth;
+            const maxH = 60; // Dibatasi biar gak terlalu jauh ke atas/bawah menu lain
+            
+            const acakX = Math.floor(Math.random() * (maxW - 20));
+            const acakH = Math.floor(Math.random() * maxH) - 20; // Variasi naik turun dikit
+            
+            btnLari.style.left = acakX + 'px';
+            btnLari.style.top = acakH + 'px';
+        }
+        
+        // Pemicu touch khusus layar HP biar dia makin kesel gak bisa pencet "Enggak"
+        document.getElementById('btn-lari').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            kaburAja();
+        });
+
+        function terimaCinta() {
+            burstHearts('💖');
+            alert('WKWK diklik MAU juga akhirnya! 😂 Fix ya, keputusan ini sah, mutlak, dan tidak bisa diganggu gugat oleh pihak manapun! Selamat hari jadian! 🤪🥳');
+        }
+
+        function pemicuFakeCrash() {
+            const overlay = document.getElementById('fake-error-overlay');
+            
+            // Kita ubah teks BSOD-nya jadi versi gombalan sebelum ditampilkan
+            overlay.innerHTML = `
+                <p style="font-size: 1.5rem; margin-bottom: 20px;">:( A fatal attraction 0xHEART-BREAK has occurred.</p>
+                <p>Sistem mendeteksi detak jantung berlebih saat menatap mata Ayak.</p>
+                <p>Mengunduh file rasa sayang... [100% COMPLETE]</p>
+                <p>Menghapus status jomblo... [LOADING ERROR - USER TOO CUTE]</p>
+                <br>
+                <p>Sistem mengalami crash karena terlalu banyak memikirkan kamu setiap hari.</p>
+                <br>
+                <p>* Tolong berikan senyuman terbaik kamu untuk memulihkan sistem.</p>
+                <p>* Jangan ditutup, atau Kakak bakal makin kangen.</p>
+                <br><br>
+                <p id="loading-error-text" style="color: #ffaa67; font-weight: bold;">Kembali ke kenyataan dalam 6 detik...</p>
+            `;
+            
+            overlay.style.display = 'block';
+            
+            let sisaWaktu = 6;
+            const countdownEl = document.getElementById('loading-error-text');
+            
+            const timer = setInterval(() => {
+                sisaWaktu--;
+                if(countdownEl) countdownEl.innerText = `Kembali ke kenyataan dalam ${sisaWaktu} detik...`;
+                if(sisaWaktu <= 0) {
+                    clearInterval(timer);
+                    overlay.style.display = 'none';
+                    alert('Hayo... kaget ya dikira eror beneran? 😜 Selamat ulang tahun ya Ayak! Semoga harimu penuh senyum hari ini!');
+                }
+            }, 1000);
+        }
+
+        function burstHearts(customEmoji) {
+            const emoji = customEmoji || '❤️';
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-item';
+                heart.innerText = emoji;
+                heart.style.left = (Math.random() * 80 + 10) + 'vw';
+                heart.style.setProperty('--speed', (Math.random() * 2 + 1.5) + 's');
+                heart.style.setProperty('--size', (Math.random() * 20 + 15) + 'px');
+                heart.style.setProperty('--opac', Math.random() * 0.6 + 0.3);
+                bgSpace.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 3500);
+            }
+        }
+
+        function spawnFloatingItem() {
+            if(document.getElementById('main-interface').style.display === 'flex') {
+                const item = document.createElement('div');
+                item.className = 'floating-item';
+                item.innerText = items[Math.floor(Math.random() * items.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.setProperty('--speed', (Math.random() * 4 + 4) + 's');
+                item.style.setProperty('--size', (Math.random() * 15 + 15) + 'px');
+                item.style.setProperty('--opac', Math.random() * 0.4 + 0.2);
+                bgSpace.appendChild(item);
+                setTimeout(() => { item.remove(); }, 8000);
+            }
+        }
+        setInterval(spawnFloatingItem, 700);
+
+        // --- AUDIO ENGINE ---
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                musicBtn.innerText = '🔇';
+                isPlaying = false;
+            } else {
+                audio.play()
+                    .then(() => { musicBtn.innerText = '🎵'; isPlaying = true; })
+                    .catch((err) => { console.log("Audio play blocked", err); isPlaying = false; });
+            }
+        }
+
+        // --- PHOTO SLIDER ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.polaroid-slide');
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // --- MESIN KETIK SURAT ---
+        const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉
+
+Sengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. 
+
+Mungkin selama ini kita sering bercanda, seru-seruan bareng, atau kadang Kakak jailin kamu sampai kesel. Tapi di hari ini, Kakak mau jujur dari hati...
+
+Kakak bersyukur banget bisa kenal dan ada di dekat kamu sampai detik ini. Melihat kamu berjuang kuliah, melewati hari-hari sibukmu, itu bikin Kakak bangga banget sama kamu.
+
+Semoga di usia yang baru ini, segala lelahmu berubah jadi berkah. Kuliahmu dilancarkan, jalan masa depanmu dipermudah, selalu diberi kesehatan, dan dikelilingi orang-orang tulus yang menyayangimu.
+
+Kalau nanti ada hari-hari yang terasa berat atau melelahkan, inget ya... kamu nggak sendirian. Selalu ada Kakak di sini yang siap dengerin cerita kamu.
+
+Sekali lagi, Happy Birthday, Ayak! 💖`;
+
+        function typeWriter(text, i) {
+            const box = document.getElementById("surat-box");
+            if (i < text.length) {
+                box.innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+                box.scrollTop = box.scrollHeight;
+                setTimeout(function() { typeWriter(text, i + 1) }, 40);
+            } else {
+                document.getElementById("letter-signature").style.opacity = "1";
+            }
+        }
+
+        // --- FIREWORKS GAME FINALE ---
+        let particles = [];
+        function createFirework(x, y) {
+            const colors = ['#ff6584', '#ffac67', '#f9a826', '#4ad3ff', '#b57cff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 40; i++) {
+                particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    alpha: 1,
+                    color: color,
+                    size: Math.random() * 3 + 1
+                });
+            }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.04; p.alpha -= 0.015;
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+
+        function autoLaunchFireworks() {
+            if(canvas.style.display === "block") {
+                createFirework(Math.random() * canvas.width, Math.random() * (canvas.height * 0.6));
+                setTimeout(autoLaunchFireworks, 400);
+            }
+        }
+
+        function executeGrandFinale(e) {
+            if(e) e.stopPropagation();
+            document.getElementById("final-gift").style.display = 'none';
+            document.getElementById("gift-instruction").innerText = "Yeay! Kado berhasil dibuka! 🥳🎆";
+            canvas.style.display = "block";
+            animateFireworks();
+            autoLaunchFireworks();
+
+            burstHearts('🎉');
+            setTimeout(() => burstHearts('🥳'), 400);
+
+            document.getElementById("wish-form-container").style.display = "block";
+        }
+
+        // --- WHATSAPP REDIRECT ENGINE ---
+        function sendWishToWhatsApp() {
+            const wishText = document.getElementById("user-wish").value.trim();
+            if (wishText === "") {
+                alert("Harapannya diisi dulu dong, jangan dikosongin yaa! 😋");
+                return;
+            }
+
+            const myPhoneNumber = "628xxxxxxxxxx"; 
+            const fullMessage = `Halo Kak! Ini harapan dan doa aku di hari ulang tahunku:\n\n"${wishText}"`;
+            const encodedMessage = encodeURIComponent(fullMessage);
+            window.open(`https://api.whatsapp.com/send?phone=${myPhoneNumber}&text=${encodedMessage}`, '_blank');
+        }
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+</body>
+</html>
