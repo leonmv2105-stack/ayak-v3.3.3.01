@@ -32,7 +32,7 @@
             perspective: 1200px;
         }
 
-        /* --- HACKER LOADING SCREEN SCREEN --- */
+        /* --- SCREEN LOADING HACKER --- */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -63,7 +63,7 @@
             position: relative;
             width: 100%;
             max-width: 500px;
-            background: rgba(10, 10, 15, 0.85);
+            background: rgba(10, 10, 15, 0.95);
             border: 1px solid var(--hacker-green);
             border-radius: 10px;
             padding: 20px;
@@ -72,7 +72,7 @@
         }
 
         .console-log {
-            height: 150px;
+            height: 140px;
             overflow-y: hidden;
             font-size: 0.85rem;
             color: var(--hacker-green);
@@ -89,6 +89,7 @@
             border-radius: 5px;
             position: relative;
             overflow: hidden;
+            margin-bottom: 15px;
         }
 
         .progress-bar {
@@ -96,7 +97,6 @@
             height: 100%;
             background: linear-gradient(90deg, #00aa44, var(--hacker-green));
             box-shadow: 0 0 10px var(--hacker-green);
-            transition: width 0.1s linear;
         }
 
         .progress-text {
@@ -112,9 +112,30 @@
             text-shadow: 1px 1px 2px #000;
         }
 
+        .btn-start-system {
+            display: none;
+            width: 100%;
+            background: var(--hacker-green);
+            color: #000;
+            border: none;
+            padding: 10px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 15px var(--hacker-green);
+            animation: pulseGlow 1.5s infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.98); opacity: 0.8; }
+        }
+
         /* --- INTERFACE UTAMA --- */
         #main-interface {
             display: none;
+            opacity: 0;
             width: 100%;
             height: 100vh;
             justify-content: center;
@@ -125,6 +146,7 @@
             left: 0;
             overflow-y: auto;
             padding: 20px 0;
+            transition: opacity 0.5s ease;
         }
 
         .floating-bg {
@@ -160,13 +182,13 @@
             box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 40px rgba(255, 101, 132, 0.05);
             transform-style: preserve-3d;
             transition: transform 0.2s ease-out;
-            max-width: 480px;
+            max-width: 450px;
             width: 92%;
             z-index: 10;
             margin: auto;
         }
 
-        /* --- SISTEM MENU NAVIGATION --- */
+        /* --- SISTEM MENU TAB --- */
         .menu-navigation {
             display: flex;
             justify-content: space-around;
@@ -178,7 +200,7 @@
         }
 
         .menu-tab {
-            padding: 10px 15px;
+            padding: 10px 5px;
             font-size: 0.85rem;
             font-weight: bold;
             color: rgba(255, 255, 255, 0.6);
@@ -196,10 +218,9 @@
             box-shadow: 0 5px 15px rgba(255, 101, 132, 0.3);
         }
 
-        /* --- KONTEN SETIAP MENU --- */
         .menu-content {
             display: none;
-            animation: tabFadeIn 0.5s ease forwards;
+            animation: tabFadeIn 0.4s ease forwards;
         }
 
         .menu-content.active {
@@ -207,7 +228,7 @@
         }
 
         @keyframes tabFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -220,7 +241,7 @@
             font-weight: 800;
         }
 
-        /* Menu 1: Beranda / Cat Art */
+        /* Menu 1: Beranda */
         .cat-art {
             position: relative;
             width: 130px;
@@ -251,7 +272,7 @@
 
         @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
 
-        /* Menu 2: Galeri Foto */
+        /* Menu 2: Galeri */
         .polaroid-gallery {
             position: relative;
             background: #ffffff;
@@ -278,7 +299,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.4s ease-in-out;
         }
 
         .polaroid-slide.active { opacity: 1; z-index: 2; }
@@ -287,11 +308,11 @@
         .nav-btn {
             position: absolute;
             bottom: 8px;
-            background: rgba(0, 0, 0, 0.06);
-            color: #444;
+            background: rgba(0, 0, 0, 0.08);
+            color: #333;
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             font-weight: bold;
             cursor: pointer;
@@ -299,16 +320,16 @@
             align-items: center;
             justify-content: center;
             z-index: 20;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
         }
         .prev-btn { left: 15px; } .next-btn { right: 15px; }
         .gallery-caption { position: absolute; bottom: 12px; left: 0; width: 100%; text-align: center; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; color: #333; font-weight: bold; }
 
-        /* Menu 3: Surat Pembaca */
+        /* Menu 3: Surat */
         .content-surat {
             text-align: justify;
             white-space: pre-line;
-            max-height: 240px;
+            max-height: 230px;
             overflow-y: auto;
             background: rgba(0, 0, 0, 0.25);
             padding: 15px;
@@ -327,9 +348,11 @@
             color: #ffb367;
             font-weight: bold;
             font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
-        /* Menu 4: Kejutan & Harapan */
+        /* Menu 4: Kejutan */
         .gift-box-final {
             display: inline-block;
             margin: 15px auto;
@@ -346,7 +369,7 @@
         #wish-form-container {
             display: none;
             margin-top: 15px;
-            animation: tabFadeIn 0.6s ease;
+            animation: tabFadeIn 0.5s ease;
         }
 
         .wish-textarea {
@@ -375,11 +398,8 @@
             cursor: pointer;
             font-size: 0.88rem;
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-            transition: transform 0.2s;
         }
-        .btn-send-wish:hover { transform: translateY(-2px); }
 
-        /* Sistem Efek Terbang */
         .floating-item {
             position: absolute;
             bottom: -50px;
@@ -426,10 +446,12 @@
                 <div class="progress-bar" id="progressBar"></div>
                 <div class="progress-text" id="progressText">0%</div>
             </div>
+            <!-- Tombol interaksi pemicu otentikasi audio agar terhindar dari blokir browser -->
+            <button class="btn-start-system" id="startBtn" onclick="enterMainSystem()">BYPASS & ENTER SYSTEM</button>
         </div>
     </div>
 
-    <!-- INTERFACE UTAMA SETELAH LOGIN/LOADING -->
+    <!-- INTERFACE UTAMA -->
     <div id="main-interface">
         <div class="music-control" id="musicBtn" onclick="toggleMusic()">🎵</div>
         <audio id="bgMusic" loop src="https://opensheetmusicdisplay.org/wp-content/uploads/2018/10/MuzioClementi_SonatinaOpus36No1_Part1.mp3"></audio> 
@@ -439,7 +461,7 @@
 
         <div class="card-container" id="main-card">
             
-            <!-- MENU NAVIGASI UTAMA -->
+            <!-- MENU NAVIGASI -->
             <div class="menu-navigation">
                 <button class="menu-tab active" onclick="switchMenu('menu-home', this)">🐾 Utama</button>
                 <button class="menu-tab" onclick="switchMenu('menu-gallery', this)">📸 Galeri</button>
@@ -447,7 +469,7 @@
                 <button class="menu-tab" onclick="switchMenu('menu-gift', this)">🎁 Surprise</button>
             </div>
 
-            <!-- ISI MENU 1: UTAMA -->
+            <!-- MENU 1: UTAMA -->
             <div id="menu-home" class="menu-content active">
                 <div class="cat-art">
                     <div class="ear left"><div class="ear-inner"></div></div>
@@ -466,7 +488,7 @@
                 </p>
             </div>
 
-            <!-- ISI MENU 2: GALERI FOTO -->
+            <!-- MENU 2: GALERI FOTO -->
             <div id="menu-gallery" class="menu-content">
                 <h2>Our Gallery ✨</h2>
                 <div class="polaroid-gallery">
@@ -485,16 +507,14 @@
                 <p style="font-size: 0.85rem; color: #aaa;">Klik panah untuk melihat lembar memori lainnya.</p>
             </div>
 
-            <!-- ISI MENU 3: SURAT -->
+            <!-- MENU 3: SURAT -->
             <div id="menu-letter" class="menu-content">
                 <h2>Pesan Dari Kakak ✉️</h2>
-                <div class="content-surat" id="surat-box">
-                    <!-- Teks surat otomatis diketik di sini saat menu dibuka -->
-                </div>
-                <div class="footer-note">— Dari Kakak 🎈</div>
+                <div class="content-surat" id="surat-box"></div>
+                <div class="footer-note" id="letter-signature">— Dari Kakak 🎈</div>
             </div>
 
-            <!-- ISI MENU 4: SURPRISE & HARAPAN -->
+            <!-- MENU 4: SURPRISE -->
             <div id="menu-gift" class="menu-content">
                 <h2>Buka Kado Kamu! 🎁</h2>
                 <p id="gift-instruction" style="color: #eee; font-size: 0.95rem; margin-bottom: 10px;">Ketuk kado misterius di bawah ini untuk mengaktifkan perayaan puncak!</p>
@@ -513,10 +533,9 @@
     </div>
 
     <script>
-        // --- ANIMASI MATRIX HACKER LOADING SCREEN ---
+        // --- MATRIX CANVAS BACKGROUND ---
         const matrixCanvas = document.getElementById('matrix-canvas');
         const mCtx = matrixCanvas.getContext('2d');
-        
         matrixCanvas.width = window.innerWidth;
         matrixCanvas.height = window.innerHeight;
         
@@ -531,7 +550,6 @@
             mCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
             mCtx.fillStyle = '#00ff66';
             mCtx.font = fontSize + 'px monospace';
-
             for(let i = 0; i < drops.length; i++) {
                 const text = charArr[Math.floor(Math.random() * charArr.length)];
                 mCtx.fillText(text, i * fontSize, drops[i] * fontSize);
@@ -541,7 +559,7 @@
         }
         const matrixInterval = setInterval(drawMatrix, 30);
 
-        // --- SIMULASI LOG KONSOL HACKER ---
+        // --- CONSOLE HACKER SYSTEM LOGS ---
         const consoleLog = document.getElementById('consoleLog');
         const logs = [
             "[INFO] Menginisialisasi Protokol Kejutan...",
@@ -551,8 +569,7 @@
             "[SUCCESS] Berkas foto berhasil diekstrak.",
             "[SYSTEM] Membuka bypass sistem pertahanan cuek...",
             "[INFO] Menyiapkan modul kue virtual & kembang api...",
-            "[READY] Mempersiapkan otentikasi User: Ayak",
-            "[ACCESS] Akses Diterima! Mengalihkan ke Beranda..."
+            "[READY] Otentikasi User 'Ayak' Berhasil!"
         ];
 
         let logIndex = 0;
@@ -561,37 +578,46 @@
                 consoleLog.innerHTML += logs[logIndex] + "<br>";
                 consoleLog.scrollTop = consoleLog.scrollHeight;
                 logIndex++;
-                setTimeout(printLogs, Math.random() * 400 + 150);
+                setTimeout(printLogs, Math.random() * 300 + 100);
             }
         }
         printLogs();
 
-        // --- PROGRESS BAR LOADING ---
+        // --- PROGRESS LOADING ACTION ---
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
+        const startBtn = document.getElementById('startBtn');
         let progress = 0;
 
         function updateLoading() {
             if (progress < 100) {
-                progress += Math.floor(Math.random() * 4) + 1;
+                progress += Math.floor(Math.random() * 5) + 2;
                 if(progress > 100) progress = 100;
                 progressBar.style.width = progress + '%';
                 progressText.innerText = progress + '%';
-                setTimeout(updateLoading, 70);
+                setTimeout(updateLoading, 60);
             } else {
-                setTimeout(() => {
-                    clearInterval(matrixInterval);
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('main-interface').style.display = 'flex';
-                    // Mulai putar musik otomatis setelah loading selesai
-                    toggleMusic();
-                }, 500);
+                consoleLog.innerHTML += "<span style='color:#fff;'>[COMPLETE] Tekan tombol di bawah untuk masuk...</span>";
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+                startBtn.style.display = "block";
             }
         }
         updateLoading();
 
+        // Fungsi pemicu masuk ke antarmuka utama
+        function enterMainSystem() {
+            clearInterval(matrixInterval);
+            document.getElementById('loading-screen').style.display = 'none';
+            
+            const mainInt = document.getElementById('main-interface');
+            mainInt.style.display = 'flex';
+            setTimeout(() => { mainInt.style.opacity = '1'; }, 50);
+            
+            // Putar audio aman dari pemblokiran browser
+            toggleMusic();
+        }
 
-        // --- SISTEM KONTROL UTAMA INTERFACE ---
+        // --- INTERFACE CONTROL & EFFECT ---
         const card = document.getElementById('main-card');
         const bgSpace = document.getElementById('bgSpace');
         const canvas = document.getElementById('canvas-fireworks');
@@ -611,7 +637,7 @@
             card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
         });
 
-        // --- PINDAH NAVIGASI MENU ---
+        // --- NAVIGATION TAB HANDLING ---
         let letterTyped = false;
         function switchMenu(menuId, tabElement) {
             document.querySelectorAll('.menu-content').forEach(content => content.classList.remove('active'));
@@ -620,14 +646,12 @@
             document.getElementById(menuId).classList.add('active');
             tabElement.classList.add('active');
 
-            // Trigger mesin ketik jika membuka menu surat pertama kali
             if (menuId === 'menu-letter' && !letterTyped) {
                 letterTyped = true;
                 typeWriter(suratText, 0);
             }
         }
 
-        // --- SISTEM ELEMEN TERBANG ---
         function burstHearts(customEmoji) {
             const emoji = customEmoji || '❤️';
             for (let i = 0; i < 12; i++) {
@@ -658,7 +682,7 @@
         }
         setInterval(spawnFloatingItem, 700);
 
-        // --- AUDIO CONTROLLER ---
+        // --- AUDIO ENGINE ---
         const audio = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -667,14 +691,15 @@
             if (isPlaying) {
                 audio.pause();
                 musicBtn.innerText = '🔇';
+                isPlaying = false;
             } else {
-                audio.play().catch((err) => { console.log("Audio diblokir browser, butuh klik.", err); });
-                musicBtn.innerText = '🎵';
+                audio.play()
+                    .then(() => { musicBtn.innerText = '🎵'; isPlaying = true; })
+                    .catch((err) => { console.log("Audio play blocked", err); isPlaying = false; });
             }
-            isPlaying = !isPlaying;
         }
 
-        // --- SLIDER FOTO DI MENU GALERI ---
+        // --- PHOTO SLIDER ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.polaroid-slide');
         function changeSlide(direction) {
@@ -683,7 +708,7 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // --- SISTEM TEKS MESIN KETIK UNTUK SURAT ---
+        // --- MESIN KETIK SURAT ---
         const suratText = `Selamat ulang tahun ya, Ayak! 🥳🎉
 
 Sengaja Kakak bikinin halaman web khusus ini biar di hari spesialmu, kamu dapet sesuatu yang beda dan membekas. 
@@ -699,15 +724,17 @@ Kalau nanti ada hari-hari yang terasa berat atau melelahkan, inget ya... kamu ng
 Sekali lagi, Happy Birthday, Ayak! 💖`;
 
         function typeWriter(text, i) {
+            const box = document.getElementById("surat-box");
             if (i < text.length) {
-                document.getElementById("surat-box").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
-                const scrollArea = document.getElementById("surat-box");
-                scrollArea.scrollTop = scrollArea.scrollHeight;
+                box.innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+                box.scrollTop = box.scrollHeight;
                 setTimeout(function() { typeWriter(text, i + 1) }, 40);
+            } else {
+                document.getElementById("letter-signature").style.opacity = "1";
             }
         }
 
-        // --- ANIMASI KEMBANG API & PENGIRIMAN PESAN ---
+        // --- FIREWORKS GAME FINALE ---
         let particles = [];
         function createFirework(x, y) {
             const colors = ['#ff6584', '#ffac67', '#f9a826', '#4ad3ff', '#b57cff'];
@@ -761,6 +788,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
             document.getElementById("wish-form-container").style.display = "block";
         }
 
+        // --- WHATSAPP REDIRECT ENGINE ---
         function sendWishToWhatsApp() {
             const wishText = document.getElementById("user-wish").value.trim();
             if (wishText === "") {
@@ -768,7 +796,7 @@ Sekali lagi, Happy Birthday, Ayak! 💖`;
                 return;
             }
 
-            // MASUKKAN NOMOR WHATSAPP KAMU DI SINI (awali kode negara 62)
+            // ISI NOMOR WHATSAPP KAMU DI SINI (Ganti dengan nomor aslimu, diawali 62)
             const myPhoneNumber = "628xxxxxxxxxx"; 
             
             const fullMessage = `Halo Kak! Ini harapan dan doa aku di hari ulang tahunku:\n\n"${wishText}"`;
